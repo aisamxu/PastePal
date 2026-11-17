@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F13F5AD7FC81BE82ED73A79 /* FlycutStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DA6B8E1CB9549B0077917F /* FlycutStore.m */; };
 		77192A2A23D6EA7A00EDB9BC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 77192A2923D6EA7A00EDB9BC /* AppDelegate.m */; };
 		77192A2C23D6EA7B00EDB9BC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77192A2B23D6EA7B00EDB9BC /* Assets.xcassets */; };
 		77192A2F23D6EA7B00EDB9BC /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 77192A2D23D6EA7B00EDB9BC /* MainMenu.xib */; };
 		77192A3223D6EA7B00EDB9BC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 77192A3123D6EA7B00EDB9BC /* main.m */; };
 		77192A3823D6EADF00EDB9BC /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77192A3723D6EADF00EDB9BC /* ServiceManagement.framework */; };
-		77192A3A23D6F46F00EDB9BC /* FlycutHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 77192A2623D6EA7A00EDB9BC /* FlycutHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		77192A3A23D6F46F00EDB9BC /* PastePalHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 77192A2623D6EA7A00EDB9BC /* PastePalHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		773ABFB113E9AA1A00AE3969 /* NSWindow+TrueCenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 773ABFAF13E9AA1A00AE3969 /* NSWindow+TrueCenter.h */; };
 		773ABFB213E9AA1A00AE3969 /* NSWindow+TrueCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 773ABFB013E9AA1A00AE3969 /* NSWindow+TrueCenter.m */; };
 		7761C885139BDE94000FB3AB /* LoginItemsAE.c in Sources */ = {isa = PBXBuildFile; fileRef = 7761C881139BDE94000FB3AB /* LoginItemsAE.c */; };
@@ -59,12 +60,14 @@
 		77A4F3B3139BD72300F39666 /* SGKeyCombo.h in Headers */ = {isa = PBXBuildFile; fileRef = 77A4F3AB139BD72300F39666 /* SGKeyCombo.h */; };
 		77A4F3B4139BD72300F39666 /* SGKeyCombo.m in Sources */ = {isa = PBXBuildFile; fileRef = 77A4F3AC139BD72300F39666 /* SGKeyCombo.m */; };
 		77AE72BD23CAE81A00F6A44B /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77AE72BC23CAE81A00F6A44B /* ApplicationServices.framework */; };
+		77C3C1B5D202B61B12B6D134 /* PastePalTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 923417A60EE78AC3A02A2C89 /* PastePalTests.m */; };
 		77DA6B921CB9549B0077917F /* FlycutStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DA6B8E1CB9549B0077917F /* FlycutStore.m */; };
 		77DA6B931CB9549B0077917F /* FlycutStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DA6B8F1CB9549B0077917F /* FlycutStore.h */; };
 		77DA6B941CB9549B0077917F /* FlycutClipping.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DA6B901CB9549B0077917F /* FlycutClipping.m */; };
 		77DA6B951CB9549B0077917F /* FlycutClipping.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DA6B911CB9549B0077917F /* FlycutClipping.h */; };
+		8AF5EDC40E794B51AF92B0A2 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4AD802A9169BE6F6E1CE41B /* XCTest.framework */; };
 		8D0C119F1F147E250046FAA0 /* FlycutOperator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D0C119E1F147E250046FAA0 /* FlycutOperator.m */; };
-		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
+		8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.xib */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		8D151CC21FAC2B38005132F0 /* acknowledgements.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8D151CC11FAC2B38005132F0 /* acknowledgements.txt */; };
@@ -74,17 +77,25 @@
 		8D2E28891B0669F500AE62C8 /* com.generalarcade.flycut.xout.32.png in Resources */ = {isa = PBXBuildFile; fileRef = 8D2E28851B0669F500AE62C8 /* com.generalarcade.flycut.xout.32.png */; };
 		AABE497C09FF9CD000A6A239 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = AABE497B09FF9CD000A6A239 /* AppController.m */; };
 		AAFAC85F0A1BD9DD00DC6025 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAFAC84A0A1BD9DD00DC6025 /* Carbon.framework */; };
+		CA876BEFFF3658322C081223 /* FlycutClipping.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DA6B901CB9549B0077917F /* FlycutClipping.m */; };
 		DBEB0C9C1442F2AE0080D24E /* NSWindow+ULIZoomEffect.h in Headers */ = {isa = PBXBuildFile; fileRef = DBEB0C9A1442F2AE0080D24E /* NSWindow+ULIZoomEffect.h */; };
 		DBEB0C9D1442F2AE0080D24E /* NSWindow+ULIZoomEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = DBEB0C9B1442F2AE0080D24E /* NSWindow+ULIZoomEffect.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A86AB46A45855D71500E29D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090;
+			remoteInfo = PastePal;
+		};
 		BDD3252DE7099A5BA6B5C45E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 77192A2523D6EA7A00EDB9BC;
-			remoteInfo = FlycutHelper;
+			remoteInfo = PastePalHelper;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -95,7 +106,7 @@
 			dstPath = Contents/Library/LoginItems;
 			dstSubfolderSpec = 1;
 			files = (
-				77192A3A23D6F46F00EDB9BC /* FlycutHelper.app in CopyFiles */,
+				77192A3A23D6F46F00EDB9BC /* PastePalHelper.app in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,20 +114,22 @@
 
 /* Begin PBXFileReference section */
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1241E1D2BD5996716E9F28D0 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		32CA4F630368D1EE00C91783 /* Flycut_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flycut_Prefix.pch; sourceTree = "<group>"; };
-		77192A2623D6EA7A00EDB9BC /* FlycutHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlycutHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		32CA4F630368D1EE00C91783 /* PastePal_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PastePal_Prefix.pch; sourceTree = "<group>"; };
+		341FE3646E6ED8D292D51042 /* PastePalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PastePalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		77192A2623D6EA7A00EDB9BC /* PastePalHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PastePalHelper.app; path = PastePalHelper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77192A2823D6EA7A00EDB9BC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		77192A2923D6EA7A00EDB9BC /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		77192A2B23D6EA7B00EDB9BC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		77192A2E23D6EA7B00EDB9BC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		77192A3023D6EA7B00EDB9BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		77192A3123D6EA7B00EDB9BC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		77192A3323D6EA7B00EDB9BC /* FlycutHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlycutHelper.entitlements; sourceTree = "<group>"; };
+		77192A3323D6EA7B00EDB9BC /* PastePalHelper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlycutHelper/PastePalHelper.entitlements; sourceTree = "<group>"; };
 		77192A3723D6EADF00EDB9BC /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
 		773ABFAF13E9AA1A00AE3969 /* NSWindow+TrueCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+TrueCenter.h"; sourceTree = "<group>"; };
 		773ABFB013E9AA1A00AE3969 /* NSWindow+TrueCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+TrueCenter.m"; sourceTree = "<group>"; };
@@ -172,17 +185,19 @@
 		77DA6B911CB9549B0077917F /* FlycutClipping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlycutClipping.h; path = FlycutEngine/FlycutClipping.h; sourceTree = SOURCE_ROOT; };
 		8D0C119E1F147E250046FAA0 /* FlycutOperator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlycutOperator.m; sourceTree = "<group>"; };
 		8D0C11A01F147E3C0046FAA0 /* FlycutOperator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlycutOperator.h; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* Flycut.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flycut.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* PastePal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PastePal.app; path = PastePal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D151CC11FAC2B38005132F0 /* acknowledgements.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = acknowledgements.txt; sourceTree = "<group>"; };
 		8D2E28821B0669F500AE62C8 /* com.generalarcade.flycut.black.16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = com.generalarcade.flycut.black.16.png; path = Resources/com.generalarcade.flycut.black.16.png; sourceTree = "<group>"; };
 		8D2E28831B0669F500AE62C8 /* com.generalarcade.flycut.black.32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = com.generalarcade.flycut.black.32.png; path = Resources/com.generalarcade.flycut.black.32.png; sourceTree = "<group>"; };
 		8D2E28841B0669F500AE62C8 /* com.generalarcade.flycut.xout.16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = com.generalarcade.flycut.xout.16.png; path = Resources/com.generalarcade.flycut.xout.16.png; sourceTree = "<group>"; };
 		8D2E28851B0669F500AE62C8 /* com.generalarcade.flycut.xout.32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = com.generalarcade.flycut.xout.32.png; path = Resources/com.generalarcade.flycut.xout.32.png; sourceTree = "<group>"; };
+		923417A60EE78AC3A02A2C89 /* PastePalTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PastePalTests.m; sourceTree = "<group>"; };
 		AABE497A09FF9CD000A6A239 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		AABE497B09FF9CD000A6A239 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		AAFAC84A0A1BD9DD00DC6025 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		DBEB0C9A1442F2AE0080D24E /* NSWindow+ULIZoomEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+ULIZoomEffect.h"; sourceTree = "<group>"; };
 		DBEB0C9B1442F2AE0080D24E /* NSWindow+ULIZoomEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+ULIZoomEffect.m"; sourceTree = "<group>"; };
+		E4AD802A9169BE6F6E1CE41B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,9 +219,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD7141F95CCFF80B6BFF8FB4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8AF5EDC40E794B51AF92B0A2 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0491066417F60D21E62E2D11 /* PastePalTests */ = {
+			isa = PBXGroup;
+			children = (
+				923417A60EE78AC3A02A2C89 /* PastePalTests.m */,
+				1241E1D2BD5996716E9F28D0 /* Info.plist */,
+			);
+			name = PastePalTests;
+			path = PastePalTests;
+			sourceTree = "<group>";
+		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -246,7 +279,9 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				77192A2623D6EA7A00EDB9BC /* FlycutHelper.app */,
+				77192A2623D6EA7A00EDB9BC /* PastePalHelper.app */,
+				8D1107320486CEB800E47090 /* PastePal.app */,
+				341FE3646E6ED8D292D51042 /* PastePalTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -261,14 +296,15 @@
 				77192A2723D6EA7A00EDB9BC /* FlycutHelper */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				0491066417F60D21E62E2D11 /* PastePalTests */,
 			);
-			name = Jumpcut;
+			name = PastePal;
 			sourceTree = "<group>";
 		};
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				32CA4F630368D1EE00C91783 /* Flycut_Prefix.pch */,
+				32CA4F630368D1EE00C91783 /* PastePal_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -295,7 +331,7 @@
 				7761C8D8139BE06B000FB3AB /* RemoveShortcut.tif */,
 				7761C8D9139BE06B000FB3AB /* RemoveShortcutPressed.tif */,
 				7761C8DA139BE06B000FB3AB /* RemoveShortcutRollover.tif */,
-				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
+				29B97318FDCFA39411CA2CEA /* MainMenu.xib */,
 				8D151CC11FAC2B38005132F0 /* acknowledgements.txt */,
 			);
 			name = Resources;
@@ -308,6 +344,7 @@
 				77AE72BC23CAE81A00F6A44B /* ApplicationServices.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+				E4AD802A9169BE6F6E1CE41B /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -321,7 +358,7 @@
 				77192A2D23D6EA7B00EDB9BC /* MainMenu.xib */,
 				77192A3023D6EA7B00EDB9BC /* Info.plist */,
 				77192A3123D6EA7B00EDB9BC /* main.m */,
-				77192A3323D6EA7B00EDB9BC /* FlycutHelper.entitlements */,
+				77192A3323D6EA7B00EDB9BC /* PastePalHelper.entitlements */,
 			);
 			path = FlycutHelper;
 			sourceTree = "<group>";
@@ -335,7 +372,7 @@
 				77DA6B911CB9549B0077917F /* FlycutClipping.h */,
 			);
 			name = FlycutEngine;
-			path = JumpcutEngine;
+			path = FlycutEngine;
 			sourceTree = "<group>";
 		};
 		7761C880139BDE94000FB3AB /* LoginItem */ = {
@@ -439,9 +476,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		77192A2523D6EA7A00EDB9BC /* FlycutHelper */ = {
+		77192A2523D6EA7A00EDB9BC /* PastePalHelper */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 77192A3423D6EA7B00EDB9BC /* Build configuration list for PBXNativeTarget "FlycutHelper" */;
+			buildConfigurationList = 77192A3423D6EA7B00EDB9BC /* Build configuration list for PBXNativeTarget "PastePalHelper" */;
 			buildPhases = (
 				77192A2223D6EA7A00EDB9BC /* Sources */,
 				77192A2323D6EA7A00EDB9BC /* Frameworks */,
@@ -451,14 +488,14 @@
 			);
 			dependencies = (
 			);
-			name = FlycutHelper;
-			productName = FlycutHelper;
-			productReference = 77192A2623D6EA7A00EDB9BC /* FlycutHelper.app */;
+			name = PastePalHelper;
+			productName = PastePalHelper;
+			productReference = 77192A2623D6EA7A00EDB9BC /* PastePalHelper.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8D1107260486CEB800E47090 /* Flycut */ = {
+		8D1107260486CEB800E47090 /* PastePal */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Flycut" */;
+			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "PastePal" */;
 			buildPhases = (
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
@@ -471,11 +508,29 @@
 			dependencies = (
 				0F3B2BD12CB22637E62ABBE5 /* PBXTargetDependency */,
 			);
-			name = Flycut;
+			name = PastePal;
 			productInstallPath = "$(HOME)/Applications";
-			productName = Jumpcut;
-			productReference = 8D1107320486CEB800E47090 /* Flycut.app */;
+			productName = PastePal;
+			productReference = 8D1107320486CEB800E47090 /* PastePal.app */;
 			productType = "com.apple.product-type.application";
+		};
+		E4E11277FF639EE8D0BCF65A /* PastePalTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9307853A718FC188781E2A09 /* Build configuration list for PBXNativeTarget "PastePalTests" */;
+			buildPhases = (
+				86D4346D8B88D626851EA389 /* Sources */,
+				CD7141F95CCFF80B6BFF8FB4 /* Frameworks */,
+				372EC6AC71DED450EFE16AC4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BE2A3FEA0F387FC245502B70 /* PBXTargetDependency */,
+			);
+			name = PastePalTests;
+			productName = PastePalTests;
+			productReference = 341FE3646E6ED8D292D51042 /* PastePalTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -488,21 +543,14 @@
 				TargetAttributes = {
 					77192A2523D6EA7A00EDB9BC = {
 						CreatedOnToolsVersion = 11.3;
-						DevelopmentTeam = S8JLSG5ES7;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					8D1107260486CEB800E47090 = {
-						DevelopmentTeam = S8JLSG5ES7;
-						ProvisioningStyle = Automatic;
-						SystemCapabilities = {
-							com.apple.Sandbox = {
-								enabled = 0;
-							};
-						};
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
-			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Flycut" */;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "PastePal" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -518,13 +566,21 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D1107260486CEB800E47090 /* Flycut */,
-				77192A2523D6EA7A00EDB9BC /* FlycutHelper */,
+				8D1107260486CEB800E47090 /* PastePal */,
+				77192A2523D6EA7A00EDB9BC /* PastePalHelper */,
+				E4E11277FF639EE8D0BCF65A /* PastePalTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		372EC6AC71DED450EFE16AC4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		77192A2423D6EA7A00EDB9BC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -538,7 +594,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
+				8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */,
 				7761C8DB139BE06B000FB3AB /* com.generalarcade.flycut.16.png in Resources */,
 				7761C8DC139BE06B000FB3AB /* com.generalarcade.flycut.32.png in Resources */,
 				7761C8DF139BE06B000FB3AB /* jumpcut.icns in Resources */,
@@ -569,6 +625,16 @@
 			files = (
 				77192A3223D6EA7B00EDB9BC /* main.m in Sources */,
 				77192A2A23D6EA7A00EDB9BC /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		86D4346D8B88D626851EA389 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				77C3C1B5D202B61B12B6D134 /* PastePalTests.m in Sources */,
+				CA876BEFFF3658322C081223 /* FlycutClipping.m in Sources */,
+				1F13F5AD7FC81BE82ED73A79 /* FlycutStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -606,19 +672,25 @@
 /* Begin PBXTargetDependency section */
 		0F3B2BD12CB22637E62ABBE5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			name = FlycutHelper;
-			target = 77192A2523D6EA7A00EDB9BC /* FlycutHelper */;
+			name = PastePalHelper;
+			target = 77192A2523D6EA7A00EDB9BC /* PastePalHelper */;
 			targetProxy = BDD3252DE7099A5BA6B5C45E /* PBXContainerItemProxy */;
+		};
+		BE2A3FEA0F387FC245502B70 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = PastePal;
+			target = 8D1107260486CEB800E47090 /* PastePal */;
+			targetProxy = A86AB46A45855D71500E29D4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
+		29B97318FDCFA39411CA2CEA /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				29B97319FDCFA39411CA2CEA /* English */,
 			);
-			name = MainMenu.nib;
+			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 		77192A2D23D6EA7B00EDB9BC /* MainMenu.xib */ = {
@@ -632,6 +704,28 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		407B1E6E6C2ACC1DEF329F87 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+				);
+				INFOPLIST_FILE = PastePalTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.aisamxu.PastePalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
 		77192A3523D6EA7B00EDB9BC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -648,7 +742,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = FlycutHelper/FlycutHelper.entitlements;
+				CODE_SIGN_ENTITLEMENTS = FlycutHelper/PastePalHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -669,8 +763,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.generalarcade.flycuthelper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.aisamxu.PastePalHelper;
+				PRODUCT_NAME = PastePalHelper;
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -691,7 +785,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_ENTITLEMENTS = FlycutHelper/FlycutHelper.entitlements;
+				CODE_SIGN_ENTITLEMENTS = FlycutHelper/PastePalHelper.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -707,8 +801,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.generalarcade.flycuthelper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.aisamxu.PastePalHelper;
+				PRODUCT_NAME = PastePalHelper;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -722,7 +816,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS)",
@@ -732,7 +826,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Flycut_Prefix.pch;
+				GCC_PREFIX_HEADER = PastePal_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					DEBUG,
 					FLYCUT_MAC,
@@ -741,9 +835,9 @@
 				INSTALL_PATH = /Applications;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MARKETING_VERSION = 1.9.7;
-				PRODUCT_BUNDLE_IDENTIFIER = com.generalarcade.flycut;
-				PRODUCT_NAME = Flycut;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.aisamxu.PastePal;
+				PRODUCT_NAME = PastePal;
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -758,7 +852,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS)",
@@ -767,15 +861,15 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Flycut_Prefix.pch;
+				GCC_PREFIX_HEADER = PastePal_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = FLYCUT_MAC;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = /Applications;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MARKETING_VERSION = 1.9.7;
-				PRODUCT_BUNDLE_IDENTIFIER = com.generalarcade.flycut;
-				PRODUCT_NAME = Flycut;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.aisamxu.PastePal;
+				PRODUCT_NAME = PastePal;
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 			};
@@ -814,7 +908,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = Flycut;
+				PRODUCT_NAME = PastePal;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -857,10 +951,32 @@
 			};
 			name = Release;
 		};
+		C4C65D079B4F5E32FF1B7BDD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				GCC_NO_COMMON_BLOCKS = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+				);
+				INFOPLIST_FILE = PastePalTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.aisamxu.PastePalTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		77192A3423D6EA7B00EDB9BC /* Build configuration list for PBXNativeTarget "FlycutHelper" */ = {
+		77192A3423D6EA7B00EDB9BC /* Build configuration list for PBXNativeTarget "PastePalHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				77192A3523D6EA7B00EDB9BC /* Debug */,
@@ -869,7 +985,16 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Flycut" */ = {
+		9307853A718FC188781E2A09 /* Build configuration list for PBXNativeTarget "PastePalTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4C65D079B4F5E32FF1B7BDD /* Release */,
+				407B1E6E6C2ACC1DEF329F87 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "PastePal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4B08A954540054247B /* Debug */,
@@ -878,7 +1003,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Flycut" */ = {
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "PastePal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,

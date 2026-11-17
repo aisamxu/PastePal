@@ -23,23 +23,35 @@ jobs:
       - name: Show Xcode version and project targets
         run: |
           xcodebuild -version
-          xcodebuild -list -project Flycut.xcodeproj
+          xcodebuild -list -project PastePal.xcodeproj
 
-      - name: Verify macOS-only targets
+      - name: Verify expected macOS targets
         run: |
-          xcodebuild -list -json -project Flycut.xcodeproj > targets.json
+          xcodebuild -list -json -project PastePal.xcodeproj > targets.json
           cat targets.json
-          if grep -q 'Flycut-iOS' targets.json; then
-            echo "iOS targets must not exist in the PastePal project."
+          for target in PastePal PastePalHelper PastePalTests; do
+            grep -q "\"$target\"" targets.json || { echo "Missing target: $target"; exit 1; }
+          done
+          if grep -qE 'Flycut-iOS|FlycutHelper|"Flycut"' targets.json; then
+            echo "Legacy Flycut or iOS targets must not exist in the PastePal project."
             exit 1
           fi
 
       - name: Build Debug
         run: |
           xcodebuild \
-            -project Flycut.xcodeproj \
-            -target Flycut \
+            -project PastePal.xcodeproj \
+            -target PastePal \
             -configuration Debug \
             ONLY_ACTIVE_ARCH=YES \
             CODE_SIGNING_ALLOWED=NO \
             build
+
+      - name: Run unit tests
+        run: |
+          xcodebuild \
+            -project PastePal.xcodeproj \
+            -scheme PastePal \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            test
