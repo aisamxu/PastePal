@@ -161,7 +161,19 @@
 }
 
 -(void) mergeList {
-    NSString *merge = [[[[jcList reverseObjectEnumerator] allObjects] valueForKey:@"clipContents"] componentsJoinedByString:@"\n"];
+    // 只合并文本条目，图片没有可拼接的文本内容
+    NSMutableArray *texts = [[NSMutableArray alloc] init];
+    for (FlycutClipping *clipping in [[jcList reverseObjectEnumerator] allObjects]) {
+        if (![clipping isImage]) {
+            [texts addObject:[clipping contents]];
+        }
+    }
+    if ([texts count] == 0) {
+        [texts release];
+        return;
+    }
+    NSString *merge = [texts componentsJoinedByString:@"\n"];
+    [texts release];
     [self addClipping:merge ofType:NSStringFromClass([merge class]) fromAppLocalizedName:@"Merge" fromAppBundleURL:nil atTimestamp:0];
 }
 
@@ -385,6 +397,32 @@
     enumerator = [subArray reverseObjectEnumerator];
     while ( aClipping = [enumerator nextObject] ) {
         [returnArray insertObject:[aClipping displayString] atIndex:0];
+    }
+    return returnArray;
+}
+
+-(NSArray *) previousClippings:(int)howMany containing:(NSString*)search
+{
+    NSMutableArray *returnArray = [[[NSMutableArray alloc] init] autorelease];
+    if (howMany <= 0) {
+        return returnArray;
+    }
+    // 搜索时前向遍历（最新在前），收集最近的匹配项，顺序与 previousDisplayStrings 一致
+    if (nil != search && search.length > 0) {
+        for (FlycutClipping *clipping in jcList) {
+            if ([[clipping contents] rangeOfString:search options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                [returnArray addObject:clipping];
+                howMany--;
+                if (0 == howMany) {
+                    break;
+                }
+            }
+        }
+        return returnArray;
+    }
+    int limit = MIN(howMany, (int)[jcList count]);
+    for (int i = 0; i < limit; i++) {
+        [returnArray addObject:[jcList objectAtIndex:i]];
     }
     return returnArray;
 }

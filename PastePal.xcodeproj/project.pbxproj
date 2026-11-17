@@ -76,6 +76,11 @@
 		DBEB0C9C1442F2AE0080D24E /* NSWindow+ULIZoomEffect.h in Headers */ = {isa = PBXBuildFile; fileRef = DBEB0C9A1442F2AE0080D24E /* NSWindow+ULIZoomEffect.h */; };
 		DBEB0C9D1442F2AE0080D24E /* NSWindow+ULIZoomEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = DBEB0C9B1442F2AE0080D24E /* NSWindow+ULIZoomEffect.m */; };
 		E50469BAFCDBFC479CF2CBD1 /* PastePalMenuDisabledTemplate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 79DF4B319A102010A1070B87 /* PastePalMenuDisabledTemplate@2x.png */; };
+		5A1B2C3D4E5F60718293A403 /* PastePalImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A1B2C3D4E5F60718293A402 /* PastePalImageStore.m */; };
+		5A1B2C3D4E5F60718293A404 /* PastePalImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A1B2C3D4E5F60718293A402 /* PastePalImageStore.m */; };
+		5A1B2C3D4E5F60718293A406 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A1B2C3D4E5F60718293A405 /* ImageIO.framework */; };
+		5A1B2C3D4E5F60718293A407 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A1B2C3D4E5F60718293A405 /* ImageIO.framework */; };
+		5A1B2C3D4E5F60718293A408 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -189,6 +194,9 @@
 		DBEB0C9A1442F2AE0080D24E /* NSWindow+ULIZoomEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSWindow+ULIZoomEffect.h"; sourceTree = "<group>"; };
 		DBEB0C9B1442F2AE0080D24E /* NSWindow+ULIZoomEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+ULIZoomEffect.m"; sourceTree = "<group>"; };
 		E4AD802A9169BE6F6E1CE41B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		5A1B2C3D4E5F60718293A401 /* PastePalImageStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PastePalImageStore.h; path = FlycutEngine/PastePalImageStore.h; sourceTree = SOURCE_ROOT; };
+		5A1B2C3D4E5F60718293A402 /* PastePalImageStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PastePalImageStore.m; path = FlycutEngine/PastePalImageStore.m; sourceTree = SOURCE_ROOT; };
+		5A1B2C3D4E5F60718293A405 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +213,7 @@
 			files = (
 				77AE72BD23CAE81A00F6A44B /* ApplicationServices.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				5A1B2C3D4E5F60718293A406 /* ImageIO.framework in Frameworks */,
 				77192A3823D6EADF00EDB9BC /* ServiceManagement.framework in Frameworks */,
 				AAFAC85F0A1BD9DD00DC6025 /* Carbon.framework in Frameworks */,
 			);
@@ -215,6 +224,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8AF5EDC40E794B51AF92B0A2 /* XCTest.framework in Frameworks */,
+				5A1B2C3D4E5F60718293A408 /* Cocoa.framework in Frameworks */,
+				5A1B2C3D4E5F60718293A407 /* ImageIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,6 +339,7 @@
 			children = (
 				77192A3723D6EADF00EDB9BC /* ServiceManagement.framework */,
 				77AE72BC23CAE81A00F6A44B /* ApplicationServices.framework */,
+				5A1B2C3D4E5F60718293A405 /* ImageIO.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 				E4AD802A9169BE6F6E1CE41B /* XCTest.framework */,
@@ -356,6 +368,8 @@
 				77DA6B8F1CB9549B0077917F /* FlycutStore.h */,
 				77DA6B901CB9549B0077917F /* FlycutClipping.m */,
 				77DA6B911CB9549B0077917F /* FlycutClipping.h */,
+				5A1B2C3D4E5F60718293A401 /* PastePalImageStore.h */,
+				5A1B2C3D4E5F60718293A402 /* PastePalImageStore.m */,
 			);
 			name = FlycutEngine;
 			path = FlycutEngine;
@@ -617,6 +631,7 @@
 				77C3C1B5D202B61B12B6D134 /* PastePalTests.m in Sources */,
 				CA876BEFFF3658322C081223 /* FlycutClipping.m in Sources */,
 				1F13F5AD7FC81BE82ED73A79 /* FlycutStore.m in Sources */,
+				5A1B2C3D4E5F60718293A404 /* PastePalImageStore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -643,6 +658,7 @@
 				7761C8AF139BDF12000FB3AB /* SRRecorderCell.m in Sources */,
 				7761C8B1139BDF12000FB3AB /* SRRecorderControl.m in Sources */,
 				77DA6B921CB9549B0077917F /* FlycutStore.m in Sources */,
+				5A1B2C3D4E5F60718293A403 /* PastePalImageStore.m in Sources */,
 				7761C8B3139BDF12000FB3AB /* SRValidator.m in Sources */,
 				773ABFB213E9AA1A00AE3969 /* NSWindow+TrueCenter.m in Sources */,
 				DBEB0C9D1442F2AE0080D24E /* NSWindow+ULIZoomEffect.m in Sources */,

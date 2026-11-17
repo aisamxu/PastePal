@@ -14,10 +14,16 @@
 
 #import <Foundation/Foundation.h>
 #import "FlycutOperator.h"
+#import "PastePalImageStore.h"
 
 #ifdef FLYCUT_MAC
 #import "AppController.h"
 #endif
+
+@interface FlycutOperator ()
+// 当前历史 store：浏览收藏时 clippingStore 会临时指向 favoritesStore
+-(FlycutStore *) historyStore;
+@end
 
 @implementation FlycutOperator {
 	NSDateFormatter *dateFormatterForFilename;
@@ -51,6 +57,11 @@
         @"removeDuplicates",
         [NSNumber numberWithBool:NO],
         @"pasteMovesToTop",
+        // 图片历史总容量上限 500MB，单张上限 50MB
+        [NSNumber numberWithLongLong:524288000],
+        @"imageHistoryMaxBytes",
+        [NSNumber numberWithLongLong:52428800],
+        @"imageMaxItemBytes",
         nil]];
 
 	return self;
@@ -103,6 +114,11 @@
 	}
 
 	stashedStore = NULL;
+
+	// 图片存储与两个 store 解耦，收藏与历史可共享同一文件
+	if ( !imageStore ) {
+		imageStore = [[PastePalImageStore alloc] init];
+	}
 }
 
 -(void) initializeStoresAndLoadContents
@@ -203,8 +219,14 @@
 
 - (NSString*)getPasteFromStackPosition
 {
+	FlycutClipping *clipping = [self getClippingFromStackPosition];
+	return [clipping contents];
+}
+
+- (FlycutClipping *)getClippingFromStackPosition
+{
 	if ( [clippingStore jcListCount] > stackPosition ) {
-		return [self getPasteFromIndex: stackPosition];
+		return [self getClippingFromIndex: stackPosition];
 	}
 	return nil;
 }
@@ -221,6 +243,10 @@
 
 - (bool)saveFromStore:(FlycutStore*)store atIndex:(int)index withPrefix:(NSString*) prefix
 {
+    // 图片条目没有可保存的文本内容；二进制已在 Images 目录中
+    if ( [store jcListCount] > index && [[store clippingAtPosition:index] isImage] ) {
+        return NO;
+    }
 #ifdef SANDBOXING
     // This works fine when sandboxed. It just saves to ~/Library/Containers/.....
     return NO;
@@ -330,6 +356,7 @@
     if ( clippingStore != favoritesStore && [clippingStore jcListCount] > stackPosition ) {
         // Get text from clipping store.
         [favoritesStore addClipping:[clippingStore clippingAtPosition:stackPosition] ];
+        // clearItemAtStackPosition 内部会做 sweep；收藏已持有同一对象，文件会被保留
         [self clearItemAtStackPosition];
         return YES;
     }
@@ -337,7 +364,17 @@
 }
 
 - (NSString*)getPasteFromIndex:(int) position {
-	NSString *clipping = [self getClipFromCount:position];
+	FlycutClipping *clipping = [self getClippingFromIndex:position];
+	return [clipping contents];
+}
+
+- (FlycutClipping *)getClippingFromIndex:(int) position {
+	if ( position < 0 || position >= [clippingStore jcListCount] ) {
+		DLog(@"Out of bounds request to jcList ignored.");
+		return nil;
+	}
+	// 先取出对象再移动；数组移动不会销毁该对象
+	FlycutClipping *clipping = [clippingStore clippingAtPosition:position];
 
 	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"pasteMovesToTop"] ) {
 		[clippingStore clippingMoveToTop:position];
@@ -480,7 +517,236 @@
 	return  NO;
 }
 
+-(FlycutStore *) historyStore
+{
+    if ( clippingStore == favoritesStore ) {
+        return stashedStore;
+    }
+    return clippingStore;
+}
+
+-(bool)addImageClippingWithData:(NSData *)data
+                           hash:(NSString *)hash
+                            uti:(NSString *)uti
+                     pixelWidth:(int)pixelWidth
+                    pixelHeight:(int)pixelHeight
+                       byteSize:(NSInteger)byteSize
+                  displayString:(NSString *)displayString
+                        fromApp:(NSString *)appName
+              withAppBundleURL:(NSString *)bundleURL
+                         target:(id)selectorTarget
+          clippingAddedSelector:(SEL)clippingAddedSelector
+{
+    if ( [data length] == 0 || [hash length] == 0 ) {
+        return NO;
+    }
+
+    // 单张上限按实际数据长度校验，避免调用方传入的 byteSize 与实际不符
+    NSInteger maxItemBytes = [[NSUserDefaults standardUserDefaults] integerForKey:@"imageMaxItemBytes"];
+    if ( maxItemBytes <= 0 ) {
+        maxItemBytes = 52428800;
+    }
+    byteSize = (NSInteger)[data length];
+    if ( byteSize > maxItemBytes ) {
+        DLog(@"Skipping image larger than %ld bytes", (long)maxItemBytes);
+        return NO;
+    }
+
+    if ( !imageStore ) {
+        imageStore = [[PastePalImageStore alloc] init];
+    }
+
+    // 先确认文件已落盘；相同 hash 已存在时 saveData 直接复用，不重复写入
+    NSError *saveError = nil;
+    NSString *file = [imageStore saveData:data hash:hash uti:uti error:&saveError];
+    if ( file == nil ) {
+        DLog(@"Failed to save image: %@", saveError);
+        return NO;
+    }
+
+    // 始终写入历史 store：浏览收藏时 clippingStore 会指向收藏，不能把新图片塞进收藏
+    FlycutStore *history = [self historyStore];
+    BOOL browsingFavorites = (history != clippingStore);
+
+    // 图片强制去重，不受 removeDuplicates 文本偏好影响
+    int existingIndex = -1;
+    for ( int i = 0; i < [history jcListCount]; i++ ) {
+        FlycutClipping *existing = [history clippingAtPosition:i];
+        if ( [existing isImage] && [[existing imageHash] isEqualToString:hash] ) {
+            existingIndex = i;
+            break;
+        }
+    }
+
+    if ( existingIndex == 0 ) {
+        // 已经是历史栈顶，不重复插入；收藏视图下的选中位置保持不变
+        if ( browsingFavorites ) {
+            stashedStackPosition = 0;
+        } else {
+            stackPosition = 0;
+        }
+        return NO;
+    }
+
+    if ( existingIndex > 0 ) {
+        [history clippingMoveToTop:existingIndex];
+        if ( browsingFavorites ) {
+            stashedStackPosition = 0;
+        } else {
+            stackPosition = 0;
+            [selectorTarget performSelector:clippingAddedSelector];
+        }
+        [self actionAfterListModification];
+        return YES;
+    }
+
+    if ( [displayString length] == 0 ) {
+        displayString = [FlycutClipping imageDisplayStringForUTI:uti
+                                                     pixelWidth:pixelWidth
+                                                    pixelHeight:pixelHeight
+                                                       byteSize:byteSize];
+    }
+    FlycutClipping *clipping = [[FlycutClipping alloc] initWithImageHash:hash
+                                                                    file:file
+                                                                     uti:uti
+                                                              pixelWidth:pixelWidth
+                                                             pixelHeight:pixelHeight
+                                                                byteSize:byteSize
+                                                           displayString:displayString
+                                                       appLocalizedName:appName
+                                                          appBundleURL:bundleURL
+                                                              timestamp:[[NSDate date] timeIntervalSince1970]];
+    [history addClipping:clipping];
+    [clipping release];
+
+    if ( browsingFavorites ) {
+        // 历史在后台更新，收藏视图的选中位置不要被改动
+        stashedStackPosition = 0;
+    } else {
+        stackPosition = 0;
+        [selectorTarget performSelector:clippingAddedSelector];
+    }
+    [self actionAfterListModification];
+    // 条数窗口可能在 addClipping 时淘汰了图片，这里统一做容量检查和孤儿清扫
+    [self enforceImageHistoryLimit];
+    [self sweepUnreferencedImages];
+
+    return YES;
+}
+
+-(BOOL)shouldSkipImageOfType:(NSString *)type fromAvailableTypes:(NSArray<NSString *> *)availableTypes
+{
+    // 图片只做 Pasteboard 类型跳过；密码长度/字符判断仅适用于文本
+    if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"skipPasswordFields"]
+        && availableTypes
+        && [[NSUserDefaults standardUserDefaults] boolForKey:@"skipPboardTypes"] ) {
+        NSSet *typesToSkip = [NSSet setWithArray:[[[[NSUserDefaults standardUserDefaults] stringForKey:@"skipPboardTypesList"] stringByReplacingOccurrencesOfString:@" " withString:@""] componentsSeparatedByString:@","]];
+        NSSet *pasteBoardTypes = [NSSet setWithArray:availableTypes];
+        if ( [pasteBoardTypes intersectsSet:typesToSkip] ) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+-(void)enforceImageHistoryLimit
+{
+    FlycutStore *history = [self historyStore];
+    if ( !history ) {
+        return;
+    }
+    if ( !imageStore ) {
+        imageStore = [[PastePalImageStore alloc] init];
+    }
+
+    NSInteger maxBytes = [[NSUserDefaults standardUserDefaults] integerForKey:@"imageHistoryMaxBytes"];
+    if ( maxBytes <= 0 ) {
+        maxBytes = 524288000;
+    }
+
+    // 只统计历史中的图片；收藏不参与总容量淘汰
+    NSInteger totalBytes = 0;
+    for ( int i = 0; i < [history jcListCount]; i++ ) {
+        FlycutClipping *clipping = [history clippingAtPosition:i];
+        if ( [clipping isImage] ) {
+            totalBytes += [clipping imageByteSize];
+        }
+    }
+    if ( totalBytes <= maxBytes ) {
+        return;
+    }
+
+    // 从最旧的条目开始淘汰，保持与条数滚动窗口一致的“旧先出”语义
+    BOOL didRemove = NO;
+    BOOL previousInhibit = inhibitAutosaveClippings;
+    inhibitAutosaveClippings = YES;
+    int index = [history jcListCount] - 1;
+    while ( totalBytes > maxBytes && index >= 0 ) {
+        FlycutClipping *clipping = [history clippingAtPosition:index];
+        if ( [clipping isImage] ) {
+            totalBytes -= [clipping imageByteSize];
+            [history clearItem:index];
+            didRemove = YES;
+        }
+        index--;
+    }
+    inhibitAutosaveClippings = previousInhibit;
+
+    if ( didRemove ) {
+        [self sweepUnreferencedImages];
+    }
+}
+
+-(void)sweepUnreferencedImages
+{
+    if ( !imageStore ) {
+        return;
+    }
+    // store 尚未初始化时不能清扫，否则会把所有旧图片当成孤儿
+    if ( !favoritesStore && ![self historyStore] ) {
+        return;
+    }
+    // 收集历史和收藏仍在引用的 hash，其他图片文件视为孤儿
+    NSMutableSet *referencedHashes = [NSMutableSet set];
+    NSMutableArray *stores = [NSMutableArray array];
+    if ( favoritesStore ) {
+        [stores addObject:favoritesStore];
+    }
+    if ( [self historyStore] && [self historyStore] != favoritesStore ) {
+        [stores addObject:[self historyStore]];
+    }
+    for ( FlycutStore *store in stores ) {
+        for ( int i = 0; i < [store jcListCount]; i++ ) {
+            FlycutClipping *clipping = [store clippingAtPosition:i];
+            if ( [clipping isImage] && [[clipping imageHash] length] > 0 ) {
+                [referencedHashes addObject:[clipping imageHash]];
+            }
+        }
+    }
+    // 所有写入和清扫都在主线程串行执行，无需保护期：Clear 后文件应立即删除
+    [imageStore deleteUnreferencedFilesKeepingHashes:referencedHashes olderThan:0];
+}
+
+-(PastePalImageStore *) imageStore
+{
+    return imageStore;
+}
+
+-(void) setImageStore:(PastePalImageStore *)store
+{
+    if ( store != imageStore ) {
+        [store retain];
+        [imageStore release];
+        imageStore = store;
+    }
+}
+
 - (void)willDeleteClippingFromStore:(id)store AtIndex:(int)index {
+	// 图片没有可恢复的文本；文件是否删除由 sweep 根据两个 store 的引用决定
+	FlycutClipping *clipping = [(FlycutStore *)store clippingAtPosition:index];
+	if ([clipping isImage]) {
+		return;
+	}
 	if ( (!inhibitAutosaveClippings) // Avoid saving things that the user explicitly deletes.
 		&& ( store == favoritesStore
 		? [[[NSUserDefaults standardUserDefaults] valueForKey:@"saveForgottenFavorites"] boolValue]
@@ -559,6 +825,8 @@
 	[clippingStore clearItem:stackPosition];
 	inhibitAutosaveClippings = NO;
 	[self actionAfterListModification];
+	// 被删图片若不再被历史或收藏引用，立即删除文件
+	[self sweepUnreferencedImages];
 
     return YES;
 }
@@ -590,6 +858,8 @@
 {
     [clippingStore clearList];
     [self actionAfterListModification];
+    // Clear 同时清除历史中的文本和图片，并删除不再被收藏引用的图片文件
+    [self sweepUnreferencedImages];
 }
 
 -(void)mergeList
@@ -625,12 +895,47 @@
 		int rangeCap = [savedJCList count] < [store rememberNum] ? [savedJCList count] : [store rememberNum];
 		NSRange loadRange = NSMakeRange(0, rangeCap);
 		NSArray *toBeRestoredClips = [[[savedJCList subarrayWithRange:loadRange] reverseObjectEnumerator] allObjects];
-		for( NSDictionary *aSavedClipping in toBeRestoredClips)
+		if ( !imageStore ) {
+			imageStore = [[PastePalImageStore alloc] init];
+		}
+		for( NSDictionary *aSavedClipping in toBeRestoredClips) {
+			// 0.8 起图片条目只保存元数据，二进制在 Images 目录
+			if ( [[aSavedClipping objectForKey:@"Kind"] isEqualToString:@"image"] ) {
+				NSString *hash = [aSavedClipping objectForKey:@"ImageHash"];
+				NSString *file = [aSavedClipping objectForKey:@"ImageFile"];
+				NSString *uti = [aSavedClipping objectForKey:@"ImageUTI"];
+				// 文件被外部删除时跳过坏条目，不能让界面出现空白图片
+				if ( [hash length] == 0 || [file length] == 0 || ![imageStore fileExistsForImageFile:file] ) {
+					DLog(@"Skipping image clipping with missing file: %@", file);
+					continue;
+				}
+				NSString *displayString = [aSavedClipping objectForKey:@"Contents"];
+				if ( [displayString length] == 0 ) {
+					displayString = [FlycutClipping imageDisplayStringForUTI:uti
+					                                              pixelWidth:[[aSavedClipping objectForKey:@"PixelWidth"] intValue]
+					                                             pixelHeight:[[aSavedClipping objectForKey:@"PixelHeight"] intValue]
+					                                                byteSize:[[aSavedClipping objectForKey:@"ByteSize"] longLongValue]];
+				}
+				FlycutClipping *clipping = [[FlycutClipping alloc] initWithImageHash:hash
+				                                                                file:file
+				                                                                 uti:uti
+				                                                          pixelWidth:[[aSavedClipping objectForKey:@"PixelWidth"] intValue]
+				                                                         pixelHeight:[[aSavedClipping objectForKey:@"PixelHeight"] intValue]
+				                                                            byteSize:[[aSavedClipping objectForKey:@"ByteSize"] longLongValue]
+				                                                       displayString:displayString
+				                                                   appLocalizedName:[aSavedClipping objectForKey:@"AppLocalizedName"]
+				                                                      appBundleURL:[aSavedClipping objectForKey:@"AppBundleURL"]
+				                                                          timestamp:[[aSavedClipping objectForKey:@"Timestamp"] integerValue]];
+				[store addClipping:clipping];
+				[clipping release];
+				continue;
+			}
 			[store addClipping:[aSavedClipping objectForKey:@"Contents"]
 							  ofType:[aSavedClipping objectForKey:@"Type"]
 				fromAppLocalizedName:[aSavedClipping objectForKey:@"AppLocalizedName"]
 					fromAppBundleURL:[aSavedClipping objectForKey:@"AppBundleURL"]
 						 atTimestamp:[[aSavedClipping objectForKey:@"Timestamp"] integerValue]];
+		}
 		return YES;
 	} else DLog(@"Not array");
 	return NO;
@@ -645,6 +950,11 @@
 		success |= [self loadEngineFrom:loadDict key:@"jcList" into:clippingStore];
 		success |= [self loadEngineFrom:loadDict key:@"favoritesList" into:favoritesStore];
 		[loadDict release];
+		// 启动时先按当前容量上限收敛历史，再清理没有被任何 store 引用的旧文件
+		if ( favoritesStore || [self historyStore] ) {
+			[self enforceImageHistoryLimit];
+			[self sweepUnreferencedImages];
+		}
 		return success;
 	}
 	return NO;
@@ -699,6 +1009,17 @@
                                      [clipping type], @"Type",
                                      [NSNumber numberWithInt:i], @"Position",nil];
 
+        // 图片只存元数据，绝不把二进制写进 NSUserDefaults
+        if ( [clipping isImage] ) {
+            [dict setObject:@"image" forKey:@"Kind"];
+            [dict setObject:[clipping imageHash] forKey:@"ImageHash"];
+            [dict setObject:[clipping imageFile] forKey:@"ImageFile"];
+            [dict setObject:[clipping imageUTI] forKey:@"ImageUTI"];
+            [dict setObject:[NSNumber numberWithInt:[clipping imagePixelWidth]] forKey:@"PixelWidth"];
+            [dict setObject:[NSNumber numberWithInt:[clipping imagePixelHeight]] forKey:@"PixelHeight"];
+            [dict setObject:[NSNumber numberWithLongLong:[clipping imageByteSize]] forKey:@"ByteSize"];
+        }
+
         NSString *val = [clipping appLocalizedName];
         if ( nil != val )
             [dict setObject:val forKey:@"AppLocalizedName"];
@@ -725,7 +1046,7 @@
 
     NSMutableDictionary *saveDict;
     saveDict = [NSMutableDictionary dictionaryWithCapacity:3];
-    [saveDict setObject:@"0.7" forKey:@"version"];
+    [saveDict setObject:@"0.8" forKey:@"version"];
     [saveDict setObject:[NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey:@"rememberNum"]]
                  forKey:@"rememberNum"];
     [saveDict setObject:[NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey:@"favoritesRememberNum"]]
@@ -762,11 +1083,22 @@
 	return [clippingStore previousDisplayStrings:howMany containing:search];
 }
 
+-(NSArray *) previousClippings:(int)howMany containing:(NSString*)search
+{
+	return [clippingStore previousClippings:howMany containing:search];
+}
+
 -(NSString*) delegateAlertWithMessageText:(NSString*)message informationText:(NSString*)information buttonsTexts:(NSArray*)buttons
 {
 	if ( self.delegate && [self.delegate respondsToSelector:@selector(alertWithMessageText:informationText:buttonsTexts:)] )
 		return [self.delegate alertWithMessageText:message informationText:information buttonsTexts:buttons];
 	return nil;
+}
+
+-(void) dealloc
+{
+	[imageStore release];
+	[super dealloc];
 }
 
 @end

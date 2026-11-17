@@ -40,6 +40,9 @@
 	RoundRecTextField	*textField;
 	RoundRecTextField	*charField;
 	NSImageView			*iconView;
+	// 图片预览模式：大图 + 一行尺寸/格式说明
+	NSImageView			*previewImageView;
+	Boolean			 imageMode;
 	id<BezelWindowDelegate>	delegate;
     Boolean             color;
 }
@@ -57,6 +60,8 @@
 - (void)setTitle:(NSString *)newTitle;
 - (NSString *)text;
 - (void)setText:(NSString *)newText;
+// 切换为图片预览模式；displayText 显示在底部一行
+- (void)setImage:(NSImage *)image displayText:(NSString *)newText;
 - (void)setColor:(BOOL)value;
 - (void)setCharString:(NSString *)newChar;
 - (void)setAlpha:(float)newValue;

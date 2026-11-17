@@ -19,10 +19,34 @@
 #import "UKLoginItemRegistry.h"
 #import "NSWindow+TrueCenter.h"
 #import "NSWindow+ULIZoomEffect.h"
+#import "PastePalImageStore.h"
+#import "FlycutClipping.h"
 #import <ApplicationServices/ApplicationServices.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <ServiceManagement/ServiceManagement.h>
 #import <Carbon/Carbon.h>
+
+@interface AppController ()
+-(void)buildImageHistoryPreferenceRow;
+-(IBAction)setImageHistoryMaxBytes:(id)sender;
+-(void)addClippingToPasteboard:(FlycutClipping *)clipping;
+-(void)addImageToPasteboard:(FlycutClipping *)clipping;
+@end
+
+// 在视图树中递归查找指定类型的子视图，用于在不改 XIB 的情况下注入图片设置
+static NSView *PastePalFindSubviewOfClass(NSView *view, Class cls)
+{
+    for (NSView *subview in [view subviews]) {
+        if ([subview isKindOfClass:cls]) {
+            return subview;
+        }
+        NSView *found = PastePalFindSubviewOfClass(subview, cls);
+        if (found) {
+            return found;
+        }
+    }
+    return nil;
+}
 
 @implementation AppController
 
@@ -120,6 +144,9 @@
 						 withDisplayLength:[[NSUserDefaults standardUserDefaults] integerForKey:@"displayLen"]
 						  withSaveSelector:@selector(savePreferencesOnDict:)
 								 forTarget:self];
+
+	// Operator 已注册图片容量默认值，此时再注入 General 面板的容量输入行
+	[self buildImageHistoryPreferenceRow];
 
     [bezel setColor:NO];
     
@@ -614,6 +641,69 @@
     }
 }
 
+-(void) buildImageHistoryPreferenceRow
+{
+    // General 面板底部约有 55pt 空闲区域，程序化注入，避免直接改 XIB 的高风险
+    NSTabView *tabView = (NSTabView *)PastePalFindSubviewOfClass([prefsPanel contentView], [NSTabView class]);
+    if (!tabView || [tabView numberOfTabViewItems] == 0) {
+        return;
+    }
+    NSView *generalView = [[tabView tabViewItemAtIndex:0] view];
+    NSBox *box = (NSBox *)PastePalFindSubviewOfClass(generalView, [NSBox class]);
+    NSView *container = box ? [box contentView] : generalView;
+    if (!container) {
+        return;
+    }
+
+    NSInteger maxBytes = [[NSUserDefaults standardUserDefaults] integerForKey:@"imageHistoryMaxBytes"];
+    if (maxBytes <= 0) {
+        maxBytes = 524288000;
+    }
+
+    NSTextField *label = [[NSTextField alloc] initWithFrame:NSMakeRect(14, 10, 140, 16)];
+    [label setStringValue:@"Image history limit:"];
+    [label setEditable:NO];
+    [label setSelectable:NO];
+    [label setBordered:NO];
+    [label setDrawsBackground:NO];
+    [label setFont:[NSFont systemFontOfSize:12]];
+    [container addSubview:label];
+    [label release];
+
+    NSTextField *field = [[NSTextField alloc] initWithFrame:NSMakeRect(158, 6, 60, 22)];
+    [field setStringValue:[NSString stringWithFormat:@"%ld", (long)(maxBytes / (1024 * 1024))]];
+    [field setToolTip:@"Total disk space for image history. Favorites are never removed automatically."];
+    [field setTarget:self];
+    [field setAction:@selector(setImageHistoryMaxBytes:)];
+    [container addSubview:field];
+    [field release];
+
+    NSTextField *unit = [[NSTextField alloc] initWithFrame:NSMakeRect(222, 10, 30, 16)];
+    [unit setStringValue:@"MB"];
+    [unit setEditable:NO];
+    [unit setSelectable:NO];
+    [unit setBordered:NO];
+    [unit setDrawsBackground:NO];
+    [unit setFont:[NSFont systemFontOfSize:12]];
+    [container addSubview:unit];
+    [unit release];
+}
+
+-(IBAction)setImageHistoryMaxBytes:(id)sender
+{
+    NSInteger megabytes = [[sender stringValue] integerValue];
+    // 下限 10MB，避免误输入直接清空全部图片历史
+    if (megabytes < 10) {
+        megabytes = 10;
+    }
+    [[NSUserDefaults standardUserDefaults] setInteger:megabytes * 1024 * 1024
+                                               forKey:@"imageHistoryMaxBytes"];
+    [sender setStringValue:[NSString stringWithFormat:@"%ld", (long)megabytes]];
+    [flycutOperator enforceImageHistoryLimit];
+    [flycutOperator sweepUnreferencedImages];
+    [self updateMenu];
+}
+
 -(IBAction) showPreferencePanel:(id)sender
 {
     [currentRunningApplication release];
@@ -670,9 +760,9 @@
 
 - (void)pasteFromStack
 {
-	NSString *content = [flycutOperator getPasteFromStackPosition];
-	if ( nil != content ) {
-		[self addClipToPasteboard:content];
+	FlycutClipping *clipping = [flycutOperator getClippingFromStackPosition];
+	if ( nil != clipping ) {
+		[self addClippingToPasteboard:clipping];
 		[self performSelector:@selector(hideApp) withObject:nil afterDelay:0.2];
 		[self performSelector:@selector(fakeCommandV) withObject:nil afterDelay:0.2];
 	} else {
@@ -700,10 +790,10 @@
         position = [mapping[position] intValue];
     }
 
-    NSString *content = [flycutOperator getPasteFromIndex: position];
-    if ( nil != content )
+    FlycutClipping *clipping = [flycutOperator getClippingFromIndex: position];
+    if ( nil != clipping )
     {
-        [self addClipToPasteboard:content];
+        [self addClippingToPasteboard:clipping];
         [self updateMenu];
 	}
 }
@@ -786,52 +876,127 @@
 
 -(void)pollPB:(NSTimer *)timer
 {
-    NSString *type = [jcPasteboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]];
-    if ( [pbCount intValue] != [jcPasteboard changeCount] && ![flycutOperator storeDisabled] ) {
-        // Reload pbCount with the current changeCount
-        // Probably poor coding technique, but pollPB should be the only thing messing with pbCount, so it should be okay
-        [pbCount release];
-        pbCount = [[NSNumber numberWithInt:[jcPasteboard changeCount]] retain];
-        if ( type != nil ) {
-			NSRunningApplication *currRunningApp = nil;
-			for (NSRunningApplication *currApp in [[NSWorkspace sharedWorkspace] runningApplications])
-				if ([currApp isActive])
-					currRunningApp = currApp;
-			bool largeCopyRisk = nil != currRunningApp && [[currRunningApp localizedName] rangeOfString:@"Remote Desktop Connection"].location != NSNotFound;
-
-			// Microsoft's Remote Desktop Connection has an issue with large copy actions, which appears to be in the time it takes to transer them over the network.  The copy starts being registered with OS X prior to completion of the transfer, and if the active application changes during the transfer the copy will be lost.  Indicate this time period by toggling the menu icon at the beginning of all RDC trasfers and back at the end.  Apple's Screen Sharing does not demonstrate this problem.
-			if (largeCopyRisk)
-				[self toggleMenuIconDisabled];
-
-			// In case we need to do a status visual, this will be dispatched out so our thread isn't blocked.
-			dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-			dispatch_async(queue, ^{
-
-				// This operation blocks until the transfer is complete, though it was was here before the RDC issue was discovered.  Convenient.
-                NSString *contents = [jcPasteboard stringForType:type];
-
-				// Toggle back if dealing with the RDC issue.
-				if (largeCopyRisk) {
-					dispatch_async(dispatch_get_main_queue(), ^{
-						[self toggleMenuIconDisabled];
-					});
-				}
-
-				if ( contents == nil || [flycutOperator shouldSkip:contents ofType:[jcPasteboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]] fromAvailableTypes:[jcPasteboard types]] ) {
-                   DLog(@"Contents: Empty or skipped");
-               } else {
-                   // Dispatch back to main queue to safely modify the clipping store and update UI.
-                   // jcList (NSMutableArray) is not thread-safe, and concurrent access from this
-                   // background queue and the main thread (e.g. showing the bezel) causes crashes.
-                   dispatch_async(dispatch_get_main_queue(), ^{
-                       if ( ! [pbCount isEqualTo:pbBlockCount] ) {
-                           [flycutOperator addClipping:contents ofType:type fromApp:[currRunningApp localizedName] withAppBundleURL:currRunningApp.bundleURL.path target:self clippingAddedSelector:@selector(updateMenu)];
-                       }
-                   });
-               }
-            });
-        } 
+    // 只有剪贴板变化且未被禁用时才处理
+    if ( [pbCount intValue] == [jcPasteboard changeCount] || [flycutOperator storeDisabled] ) {
+        return;
     }
+
+    // 先记录新的 changeCount；后台读取期间若又有新复制，提交前会被 pbCount 校验拦下
+    [pbCount release];
+    pbCount = [[NSNumber numberWithInt:[jcPasteboard changeCount]] retain];
+
+    // 文本优先：同时带文本和 TIFF 的复制不应被误记为图片
+    NSString *type = [jcPasteboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]];
+    if ( type != nil ) {
+        NSRunningApplication *currRunningApp = nil;
+        for (NSRunningApplication *currApp in [[NSWorkspace sharedWorkspace] runningApplications])
+            if ([currApp isActive])
+                currRunningApp = currApp;
+        bool largeCopyRisk = nil != currRunningApp && [[currRunningApp localizedName] rangeOfString:@"Remote Desktop Connection"].location != NSNotFound;
+
+        // Microsoft's Remote Desktop Connection has an issue with large copy actions, which appears to be in the time it takes to transer them over the network.  The copy starts being registered with OS X prior to completion of the transfer, and if the active application changes during the transfer the copy will be lost.  Indicate this time period by toggling the menu icon at the beginning of all RDC trasfers and back at the end.  Apple's Screen Sharing does not demonstrate this problem.
+        if (largeCopyRisk)
+            [self toggleMenuIconDisabled];
+
+        // In case we need to do a status visual, this will be dispatched out so our thread isn't blocked.
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(queue, ^{
+
+            // This operation blocks until the transfer is complete, though it was was here before the RDC issue was discovered.  Convenient.
+            NSString *contents = [jcPasteboard stringForType:type];
+
+            // Toggle back if dealing with the RDC issue.
+            if (largeCopyRisk) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self toggleMenuIconDisabled];
+                });
+            }
+
+            if ( contents == nil || [flycutOperator shouldSkip:contents ofType:[jcPasteboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]] fromAvailableTypes:[jcPasteboard types]] ) {
+                DLog(@"Contents: Empty or skipped");
+            } else {
+                // Dispatch back to main queue to safely modify the clipping store and update UI.
+                // jcList (NSMutableArray) is not thread-safe, and concurrent access from this
+                // background queue and the main thread (e.g. showing the bezel) causes crashes.
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if ( ! [pbCount isEqualTo:pbBlockCount] ) {
+                        [flycutOperator addClipping:contents ofType:type fromApp:[currRunningApp localizedName] withAppBundleURL:currRunningApp.bundleURL.path target:self clippingAddedSelector:@selector(updateMenu)];
+                    }
+                });
+            }
+        });
+        return;
+    }
+
+    // 没有文本时按 PNG > TIFF > JPEG > HEIC 的优先级读取一种图片格式
+    NSArray *imageTypes = [NSArray arrayWithObjects:
+                           NSPasteboardTypePNG,
+                           NSPasteboardTypeTIFF,
+                           @"public.jpeg",
+                           @"public.heic",
+                           nil];
+    NSString *imageType = [jcPasteboard availableTypeFromArray:imageTypes];
+    if ( imageType == nil ) {
+        return;
+    }
+
+    NSRunningApplication *currRunningApp = nil;
+    for (NSRunningApplication *currApp in [[NSWorkspace sharedWorkspace] runningApplications])
+        if ([currApp isActive])
+            currRunningApp = currApp;
+    NSArray *availableTypes = [jcPasteboard types];
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
+        // 图片可能很大，读取、哈希和尺寸解析全部放在后台
+        NSData *data = [jcPasteboard dataForType:imageType];
+        if ( data == nil || [data length] == 0 ) {
+            return;
+        }
+
+        NSInteger maxItemBytes = [[NSUserDefaults standardUserDefaults] integerForKey:@"imageMaxItemBytes"];
+        if ( maxItemBytes <= 0 ) {
+            maxItemBytes = 52428800;
+        }
+        if ( (NSInteger)[data length] > maxItemBytes ) {
+            DLog(@"Skipping oversized image: %lu bytes", (unsigned long)[data length]);
+            return;
+        }
+        if ( [flycutOperator shouldSkipImageOfType:imageType fromAvailableTypes:availableTypes] ) {
+            DLog(@"Image pasteboard type skipped");
+            return;
+        }
+
+        int pixelWidth = 0;
+        int pixelHeight = 0;
+        if ( ![PastePalImageStore pixelSizeForImageData:data width:&pixelWidth height:&pixelHeight] ) {
+            DLog(@"Unreadable image data");
+            return;
+        }
+        NSString *hash = [PastePalImageStore sha256HexForData:data];
+        NSString *displayString = [FlycutClipping imageDisplayStringForUTI:imageType
+                                                               pixelWidth:pixelWidth
+                                                              pixelHeight:pixelHeight
+                                                                 byteSize:(NSInteger)[data length]];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // 后台读取期间用户又复制了其他内容，则放弃这次图片
+            if ( [pbCount isEqualTo:pbBlockCount] ) {
+                return;
+            }
+            [flycutOperator addImageClippingWithData:data
+                                                hash:hash
+                                                 uti:imageType
+                                          pixelWidth:pixelWidth
+                                         pixelHeight:pixelHeight
+                                            byteSize:(NSInteger)[data length]
+                                       displayString:displayString
+                                             fromApp:[currRunningApp localizedName]
+                                   withAppBundleURL:currRunningApp.bundleURL.path
+                                              target:self
+                               clippingAddedSelector:@selector(updateMenu)];
+        });
+    });
 }
 
 - (void)processBezelKeyDown:(NSEvent *)theEvent {
@@ -1130,29 +1295,38 @@
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[jcMenu setMenuChangedMessagesEnabled:NO];
 
-		NSArray *returnedDisplayStrings = [flycutOperator previousDisplayStrings:[[NSUserDefaults standardUserDefaults] integerForKey:@"displayNum"] containing:search];
+		NSArray *returnedClippings = [flycutOperator previousClippings:[[NSUserDefaults standardUserDefaults] integerForKey:@"displayNum"] containing:search];
 
 		NSArray *menuItems = [[[jcMenu itemArray] reverseObjectEnumerator] allObjects];
 
-		NSArray *clipStrings = [[returnedDisplayStrings reverseObjectEnumerator] allObjects];
+		NSArray *clipItems = [[returnedClippings reverseObjectEnumerator] allObjects];
 
 		// Figure out if the number of menu items is changing and add or remove entries as necessary.
 		// If we remove all of them and add all new ones, the menu won't redraw if the count is unchanged, so just reuse them by changing their title.
 		int oldItems = [menuItems count]-jcMenuBaseItemsCount;
-		int newItems = [clipStrings count];
-        DLog(@"list=%@, oldItems=%d, newItems=%d", returnedDisplayStrings, oldItems, newItems);
-        
+		int newItems = [clipItems count];
+        DLog(@"list=%@, oldItems=%d, newItems=%d", returnedClippings, oldItems, newItems);
+
         for ( int i = 0; i < oldItems; i++ )
             [jcMenu removeItemAtIndex:0];
-        
+
         for ( int i = 0; i < newItems; i++ )
         {
+            FlycutClipping *clipping = [clipItems objectAtIndex:i];
             NSMenuItem *item;
-            item = [[NSMenuItem alloc] initWithTitle:[clipStrings objectAtIndex:i]
+            item = [[NSMenuItem alloc] initWithTitle:[clipping displayString]
                                               action:@selector(processMenuClippingSelection:)
                                        keyEquivalent:@""];
             [item setTarget:self];
             [item setEnabled:YES];
+            // 图片条目显示 32px 缩略图；设为 16pt 以适配菜单并在 Retina 上清晰
+            if ( [clipping isImage] ) {
+                NSImage *thumbnail = [[flycutOperator imageStore] thumbnailForClipping:clipping maxPixelSize:32];
+                if ( thumbnail ) {
+                    [thumbnail setSize:NSMakeSize(16, 16)];
+                    [item setImage:thumbnail];
+                }
+            }
             [jcMenu insertItem:item atIndex:0];
             // Way back in 0.2, failure to release the new item here was causing a quite atrocious memory leak.
             [item release];
@@ -1182,11 +1356,52 @@
 {
     NSArray *pbTypes;
     pbTypes = [NSArray arrayWithObjects:@"NSStringPboardType",NULL];
-    
+
     [jcPasteboard declareTypes:pbTypes owner:NULL];
-	
+
     [jcPasteboard setString:pbFullText forType:@"NSStringPboardType"];
     [self setPBBlockCount:[NSNumber numberWithInt:[jcPasteboard changeCount]]];
+}
+
+-(void)addClippingToPasteboard:(FlycutClipping *)clipping
+{
+    if ( [clipping isImage] ) {
+        [self addImageToPasteboard:clipping];
+    } else {
+        [self addClipToPasteboard:[clipping contents]];
+    }
+}
+
+-(void)addImageToPasteboard:(FlycutClipping *)clipping
+{
+    NSDictionary *representations = [[flycutOperator imageStore] pasteboardRepresentationsForClipping:clipping];
+    if ( [representations count] == 0 ) {
+        DLog(@"No pasteboard representation could be generated for image");
+        return;
+    }
+
+    // 固定声明顺序，让接收方优先选择无损 PNG；JPG 与 JPEG 是同一 UTI，只声明一次
+    NSArray *preferredTypes = [NSArray arrayWithObjects:
+                               @"public.png", @"public.tiff", @"public.jpeg", @"public.heic", nil];
+    NSMutableArray *declaredTypes = [NSMutableArray arrayWithCapacity:4];
+    for ( NSString *type in preferredTypes ) {
+        if ( [representations objectForKey:type] ) {
+            [declaredTypes addObject:type];
+        }
+    }
+
+    [jcPasteboard declareTypes:declaredTypes owner:NULL];
+    BOOL wroteAny = NO;
+    for ( NSString *type in declaredTypes ) {
+        if ( [jcPasteboard setData:[representations objectForKey:type] forType:type] ) {
+            wroteAny = YES;
+        }
+    }
+
+    // 至少成功写入一种格式才屏蔽轮询，避免吞掉用户接下来的真实复制
+    if ( wroteAny ) {
+        [self setPBBlockCount:[NSNumber numberWithInt:[jcPasteboard changeCount]]];
+    }
 }
 
 -(void) stackDown
@@ -1199,7 +1414,17 @@
 -(void) fillBezel
 {
     FlycutClipping* clipping = [flycutOperator clippingAtStackPosition];
-    [bezel setText:[NSString stringWithFormat:@"%@", [clipping contents]]];
+    if ( [clipping isImage] ) {
+        // 预览按最大 640px 解码，避免几十 MB 的原图撑爆 Bezel 和内存
+        NSImage *preview = [[flycutOperator imageStore] imageForClipping:clipping maxPixelSize:640];
+        if ( nil != preview ) {
+            [bezel setImage:preview displayText:[clipping contents]];
+        } else {
+            [bezel setText:[clipping contents]];
+        }
+    } else {
+        [bezel setText:[NSString stringWithFormat:@"%@", [clipping contents]]];
+    }
     [bezel setCharString:[NSString stringWithFormat:@"%d of %d", [flycutOperator stackPosition] + 1, [flycutOperator jcListCount]]];
     NSString *localizedName = [clipping appLocalizedName];
     if ( nil == localizedName )
