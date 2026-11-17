@@ -307,8 +307,11 @@ static NSView *PastePalFindSubviewOfClass(NSView *view, Class cls)
         statusItemText = [statusItem title];
         statusItemImage = [statusItem image];
         [statusItem setTitle: @""];
-        // 置灰态同样使用单色模板，避免出现彩色像素
-        NSImage *disabledIcon = [NSImage imageNamed:@"PastePalMenuDisabledTemplate.png"];
+        // 置灰态同样使用单色模板，避免出现彩色像素。
+        // Xcode 会把同名的 .png 与 @2x.png 合并为 .tiff，必须按不带扩展名的资源名加载
+        NSImage *disabledIcon = [NSImage imageNamed:@"PastePalMenuDisabledTemplate"];
+        if ( disabledIcon == nil )
+            disabledIcon = [NSImage imageNamed:NSImageNameActionTemplate];
         [disabledIcon setTemplate:YES];
         [statusItem setImage: disabledIcon];
         return true;
@@ -394,9 +397,12 @@ static NSView *PastePalFindSubviewOfClass(NSView *view, Class cls)
         [statusItem setImage:nil];
         [statusItem setTitle:[NSString stringWithFormat:@"%C",0x2702]];
     } else {
-        // 默认使用纯单色 P 模板；isTemplate 让系统按菜单栏深浅色自动反色
+        // 默认使用纯单色 P 模板；isTemplate 让系统按菜单栏深浅色自动反色。
+        // Xcode 会把同名的 .png 与 @2x.png 合并为 .tiff，必须按不带扩展名的资源名加载
         [statusItem setTitle:@""];
-        NSImage *icon = [NSImage imageNamed:@"PastePalMenuTemplate.png"];
+        NSImage *icon = [NSImage imageNamed:@"PastePalMenuTemplate"];
+        if ( icon == nil )
+            icon = [NSImage imageNamed:NSImageNameActionTemplate];
         [icon setTemplate:YES];
         [statusItem setImage:icon];
     }
