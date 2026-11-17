@@ -1,58 +1,74 @@
-### Flycut Help
-<a href="http://itunes.apple.com/us/app/flycut-clipboard-manager/id442160987?mt=12"><img src="http://a3.mzstatic.com/us/r1000/047/Purple/fb/53/f2/mzi.mcaxwyjm.175x175-75.png" /></a><br />
+### PastePal Help
+
 **Basics**
 
 Copy the same way as always.
 
 Paste the same way as always.
 
-Press the Main Hotkey (Shift-Command-v, by default) to access your clipboard history.  Or just use the Flycut menu (that little red locker, like the one you see above.
+Press the main hotkey (Shift-Command-V by default) to open the clipboard
+history bezel, or use the PastePal menu-bar icon.
 
 **The Bezel**
 
-The Bezel is what you see when you press the Main Hotkey.  It's the semi-transparent box that appears in the middle of your screen, showing you your clipboard history.  To get started, just use the up and down arrow keys while holding the command key to step through your history. 
+The bezel is the semi-transparent box that appears in the middle of the screen
+with your clipboard history. Use the up and down arrow keys while holding the
+Command key to step through the history.
 
-If "sticky bezel" option is enabled, there is no need to hold the command key. When you find something you want to paste, press Return and it is pasted while the Bezel closes automatically.  If you don't want to paste, just press the Esc key.
+If "sticky bezel" is enabled, you do not need to hold the Command key. Press
+Return to paste the displayed item and close the bezel, or Esc to close it
+without pasting.
 
-**Bezel Keystrokes**
+**Bezel keystrokes**
 
-Here's a complete list of keys you can use in the Bezel.
+- **Down Arrow**, **Right Arrow**, or **j**: Move backward in the history.
+- **Up Arrow**, **Left Arrow**, or **k**: Move forward in the history.
+- **Return**: Paste the displayed item and close the bezel.
+- **Esc**: Close the bezel without pasting, preserving the position.
+- **Fn-Return**: Move the displayed item to the front of the history and close
+  the bezel.
+- **Command-,**: Open the PastePal preferences panel.
+- **Home**: Move to the most recent item.
+- **End**: Move to the least recent item.
+- **Page Up**: Move forward ten positions.
+- **Page Down**: Move backward ten positions.
+- **Backspace** or **Delete**: Delete the displayed item and close the bezel.
+- **1** through **9** and **0**: Jump to that history position (0 means
+  position 10).
+- **s** or **S**: Save the displayed text clipping to a file on the Desktop.
+  Capital **S** also deletes it from the history. Images cannot be saved this
+  way.
+- **f**: Switch between the main history and the favorites store.
+- **F**: Save the displayed item to favorites, removing it from the main
+  history.
 
-**Down Arrow** or **Right Arrow**: Move backward in your clipboard history.
+**Images**
 
-**Up Arrow** or **Left Arrow**: Move forward in your clipboard history.
+PastePal records clipboard images alongside text in the same history timeline.
 
-**Return**: Paste the clipboard history item currently displayed, closing the Bezel.
+- Supported clipboard formats: PNG, TIFF, JPEG, and HEIC.
+- The menu shows a small thumbnail for image entries; the bezel shows a larger
+  preview together with the image dimensions, format, and size.
+- Copying the same image again moves the existing entry to the top instead of
+  creating a duplicate.
+- Text and images share the history limit configured in Preferences
+  ("Remember").
+- Image files use a separate storage cap (500 MB by default, configurable in
+  Preferences > General). The oldest non-favorite images are removed when the
+  cap is exceeded.
+- A single image larger than 50 MB is ignored.
+- Favorites are never removed automatically.
+- Choosing Clear removes both text and images from the current history and
+  deletes image files that are no longer referenced.
 
-**Esc**: Close the bezel without pasting, preserving bezel position in the history.
+**Menu features**
 
-**Enter** (Fn-Return): Move the clipboard history item currently displayed to the front of the history, closing the Bezel.
+The PastePal menu lists recent clippings and lets you search them, clear the
+current history, merge text clippings into one entry, switch to favorites, and
+open the preferences panel. Option-click the menu-bar icon to pause or resume
+clipboard tracking, for example while copying passwords.
 
-**Command-,**: Display the Flycut preferences panel.
+**Preferences**
 
-**Home**: Move to the most recent item in your clipboard history.
-
-**End**: Move to the least recent item in your clipboard history.
-
-**PgDn**: Move backward ten positions in your clipboard history.
-
-**PgUp**: Move forward ten positions in your clipboard history.
-
-**Backspace** or **Delete**: Delete the clipboard history item currently displayed, closing the Bezel.
-
-**1** through **9** and **0**: Move to the clipboard history position indicated by the number, or position 10 for zero.
-
-**s** or **S**: Save the clipboard history item currently displayed to a file, closing the Bezel.  Delete the item from the clipboard history if capital S was pressed.  Clipping is saved to a file on the Desktop, akin to how Screen Shots are saved by OS X.  e.g.  "Desktop/Clipping 2015-07-15 at 08.35.10.txt"
-
-**f**: Switch between the main clipboard history store and the favorites store.  The favorites store appears in the Bezel and works in the same way as the main clipboard history store, aside from having a yellow tint to the Bezel.
-
-**F**: Save the clipboard history item currently displayed to the favorites store, deleting it from the main clipboard history store and closing the Bezel.
-
-**Menu Features**
-
-The Flycut menu allows you to select from the most recent items in the main clipboard history store, clear all of them, merge them all into one entry, or access the preferences panel.  You can also Option-Click the Flycut menu icon to disable or reenable clipboard tracking, in case you are copying sensitive information such as passwords.
-
-**Preferences Panel**
-
-The preferences panel allows you to customize a large number of settings, several of which should be documented here but will have to wait for another day.
-
+The preferences panel lets you change the hotkey, history size, bezel behavior,
+image storage limit, launch-at-login, and other options.

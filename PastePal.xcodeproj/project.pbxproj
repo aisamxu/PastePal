@@ -41,10 +41,6 @@
 		7761C8B1139BDF12000FB3AB /* SRRecorderControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 7761C8A5139BDF12000FB3AB /* SRRecorderControl.m */; };
 		7761C8B2139BDF12000FB3AB /* SRValidator.h in Headers */ = {isa = PBXBuildFile; fileRef = 7761C8A6139BDF12000FB3AB /* SRValidator.h */; };
 		7761C8B3139BDF12000FB3AB /* SRValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7761C8A7139BDF12000FB3AB /* SRValidator.m */; };
-		7761C8E1139BE06B000FB3AB /* net.sf.jumpcut.preferences.acknowledgements.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7761C8D3139BE06B000FB3AB /* net.sf.jumpcut.preferences.acknowledgements.tiff */; };
-		7761C8E2139BE06B000FB3AB /* net.sf.jumpcut.preferences.appearance.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7761C8D4139BE06B000FB3AB /* net.sf.jumpcut.preferences.appearance.tiff */; };
-		7761C8E3139BE06B000FB3AB /* net.sf.jumpcut.preferences.general.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7761C8D5139BE06B000FB3AB /* net.sf.jumpcut.preferences.general.tiff */; };
-		7761C8E4139BE06B000FB3AB /* net.sf.jumpcut.preferences.hotkey.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 7761C8D6139BE06B000FB3AB /* net.sf.jumpcut.preferences.hotkey.tiff */; };
 		7761C8E6139BE06B000FB3AB /* RemoveShortcut.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7761C8D8139BE06B000FB3AB /* RemoveShortcut.tif */; };
 		7761C8E7139BE06B000FB3AB /* RemoveShortcutPressed.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7761C8D9139BE06B000FB3AB /* RemoveShortcutPressed.tif */; };
 		7761C8E8139BE06B000FB3AB /* RemoveShortcutRollover.tif in Resources */ = {isa = PBXBuildFile; fileRef = 7761C8DA139BE06B000FB3AB /* RemoveShortcutRollover.tif */; };
@@ -163,10 +159,6 @@
 		7761C8A5139BDF12000FB3AB /* SRRecorderControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRRecorderControl.m; sourceTree = "<group>"; };
 		7761C8A6139BDF12000FB3AB /* SRValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SRValidator.h; sourceTree = "<group>"; };
 		7761C8A7139BDF12000FB3AB /* SRValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SRValidator.m; sourceTree = "<group>"; };
-		7761C8D3139BE06B000FB3AB /* net.sf.jumpcut.preferences.acknowledgements.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = net.sf.jumpcut.preferences.acknowledgements.tiff; path = Resources/net.sf.jumpcut.preferences.acknowledgements.tiff; sourceTree = "<group>"; };
-		7761C8D4139BE06B000FB3AB /* net.sf.jumpcut.preferences.appearance.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = net.sf.jumpcut.preferences.appearance.tiff; path = Resources/net.sf.jumpcut.preferences.appearance.tiff; sourceTree = "<group>"; };
-		7761C8D5139BE06B000FB3AB /* net.sf.jumpcut.preferences.general.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = net.sf.jumpcut.preferences.general.tiff; path = Resources/net.sf.jumpcut.preferences.general.tiff; sourceTree = "<group>"; };
-		7761C8D6139BE06B000FB3AB /* net.sf.jumpcut.preferences.hotkey.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = net.sf.jumpcut.preferences.hotkey.tiff; path = Resources/net.sf.jumpcut.preferences.hotkey.tiff; sourceTree = "<group>"; };
 		7761C8D8139BE06B000FB3AB /* RemoveShortcut.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = RemoveShortcut.tif; path = Resources/RemoveShortcut.tif; sourceTree = "<group>"; };
 		7761C8D9139BE06B000FB3AB /* RemoveShortcutPressed.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = RemoveShortcutPressed.tif; path = Resources/RemoveShortcutPressed.tif; sourceTree = "<group>"; };
 		7761C8DA139BE06B000FB3AB /* RemoveShortcutRollover.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = RemoveShortcutRollover.tif; path = Resources/RemoveShortcutRollover.tif; sourceTree = "<group>"; };
@@ -322,10 +314,6 @@
 			isa = PBXGroup;
 			children = (
 				7761C8EB139BE09D000FB3AB /* Info.plist */,
-				7761C8D3139BE06B000FB3AB /* net.sf.jumpcut.preferences.acknowledgements.tiff */,
-				7761C8D4139BE06B000FB3AB /* net.sf.jumpcut.preferences.appearance.tiff */,
-				7761C8D5139BE06B000FB3AB /* net.sf.jumpcut.preferences.general.tiff */,
-				7761C8D6139BE06B000FB3AB /* net.sf.jumpcut.preferences.hotkey.tiff */,
 				7761C8D8139BE06B000FB3AB /* RemoveShortcut.tif */,
 				7761C8D9139BE06B000FB3AB /* RemoveShortcutPressed.tif */,
 				7761C8DA139BE06B000FB3AB /* RemoveShortcutRollover.tif */,
@@ -602,10 +590,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072A0486CEB800E47090 /* MainMenu.xib in Resources */,
-				7761C8E1139BE06B000FB3AB /* net.sf.jumpcut.preferences.acknowledgements.tiff in Resources */,
-				7761C8E2139BE06B000FB3AB /* net.sf.jumpcut.preferences.appearance.tiff in Resources */,
-				7761C8E3139BE06B000FB3AB /* net.sf.jumpcut.preferences.general.tiff in Resources */,
-				7761C8E4139BE06B000FB3AB /* net.sf.jumpcut.preferences.hotkey.tiff in Resources */,
 				7761C8E6139BE06B000FB3AB /* RemoveShortcut.tif in Resources */,
 				7761C8E7139BE06B000FB3AB /* RemoveShortcutPressed.tif in Resources */,
 				8D151CC21FAC2B38005132F0 /* acknowledgements.txt in Resources */,

@@ -217,9 +217,13 @@ of tabs for the specified identifier.
 		[toolbarItem setPaletteLabel: itemLabel];
 		[toolbarItem setTag:[tabView indexOfTabViewItemWithIdentifier:itemIdent]];
 		
-		// Set up a reasonable tooltip, and image   Note, these aren't localized, but you will likely want to localize many of the item's properties 
+		// Set up a reasonable tooltip, and image   Note, these aren't localized, but you will likely want to localize many of the item's properties
 		[toolbarItem setToolTip: itemLabel];
-		[toolbarItem setImage: [NSImage imageNamed:itemIdent]];
+		// 旧 Jumpcut 偏好图标已移除；资源缺失时退回系统模板图标，避免工具栏空白
+		NSImage *itemImage = [NSImage imageNamed:itemIdent];
+		if ( itemImage == nil )
+			itemImage = [NSImage imageNamed:NSImageNameActionTemplate];
+		[toolbarItem setImage:itemImage];
 		
 		// Tell the item what message to send when it is clicked 
 		[toolbarItem setTarget: self];
