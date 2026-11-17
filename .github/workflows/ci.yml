@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Show Xcode version and project targets
+        run: |
+          xcodebuild -version
+          xcodebuild -list -project Flycut.xcodeproj
+
+      - name: Verify macOS-only targets
+        run: |
+          xcodebuild -list -json -project Flycut.xcodeproj > targets.json
+          cat targets.json
+          if grep -q 'Flycut-iOS' targets.json; then
+            echo "iOS targets must not exist in the PastePal project."
+            exit 1
+          fi
+
+      - name: Build Debug
+        run: |
+          xcodebuild \
+            -project Flycut.xcodeproj \
+            -target Flycut \
+            -configuration Debug \
+            ONLY_ACTIVE_ARCH=YES \
+            CODE_SIGNING_ALLOWED=NO \
+            build
