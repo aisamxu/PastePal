@@ -1,24 +1,24 @@
-Support: https://github.com/TermiT/Flycut/issues
+Support: https://github.com/aisamxu/PastePal/issues
 
-Flycut, developed by General Arcade (http://www.generalarcade.com/). Flycut is a fork of Jumpcut. Source code avilable on GitHub: http://github.com/TermiT/Flycut
-© General Arcade, 2011 - 2020.
+PastePal is derived from Flycut, developed by General Arcade
+(http://www.generalarcade.com/). Flycut is a fork of Jumpcut. Flycut source code
+is available on GitHub at http://github.com/TermiT/Flycut.
+Flycut © General Arcade, 2011 - 2020.
 
-Flycut macOS incorporates the following libraries, used with gratitude:
+PastePal incorporates the following libraries, used with gratitude:
 	• ShortcutRecorder by Jesper et al. (<http://wafflesoftware.net/>)
 	• a modified version of UKPrefsPanel by Uli Kusterer (<http://www.zathras.de/>)
 	• SGHotKeysLib by Justin Williams (<https://github.com/agilebits/SGHotKeysLib>)
-Flycut iOS incorporates the following libraries, used with gratitude:
-	• MGSwipeTableCell by Imanol Fernandez (<https://github.com/MortimerGoro/MGSwipeTableCell>)
-	• a modified version of InAppSettingsKit by Luc Vandal and Ortwin Gentz (<https://github.com/futuretap/InAppSettingsKit>)
-Flycut macOS & iOS incorporates the following libraries, used with gratitude:
-	• MJCloudKitUserDefaultsSync by Mark Jerde (<https://github.com/MarkJerde/MJCloudKitUserDefaultsSync>)
+
+Image storage, sizing, and pasteboard format conversion use Apple's ImageIO and
+CommonCrypto system frameworks.
 
 Jumpcut is open source code built with open source code. Jumpcut incorporates the
 following libraries, used with gratitude:
 	• PTHotKey by Quentin Carnicelli (<http://rogueamoeba.com/>)
 	• ShortcutRecorder by Jesper et al. (<http://wafflesoftware.net/>)
 	• Sparkle by Andy Matuschak (<http://www.andymatuschak.org/>)
-	• a modified version of UKPrefsPanel by Uli Kusterer (<http://www.zathras.de/>) 
+	• a modified version of UKPrefsPanel by Uli Kusterer (<http://www.zathras.de/>)
 
 Additionally, much of the original code for Jumpcut was derived from Brett Simmons' TigerLaunch (<http://ranchero.com/tigerlaunch/>) and constant referral to the examples and discussion at CocoaDev.com.
 

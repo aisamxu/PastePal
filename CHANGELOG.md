@@ -1,24 +1,43 @@
 # Changelog
 
-## 1.9.7 (2026-08-04)
+All notable changes to PastePal are documented here. The project follows
+[Semantic Versioning](https://semver.org/).
 
-First release since 1.9.6 (2020). Focused on crash fixes and modern-macOS
-compatibility.
+## 1.0.0 - Unreleased
 
-- Fixed a crash on macOS 26 when copying large content from Microsoft Remote
-  Desktop Connection (the menu-bar icon update ran off the main thread). (#262, #279)
-- Fixed an intermittent crash when a copy was quickly followed by a paste — the
-  clipboard store was being modified from a background thread while the UI read
-  it. Clipboard capture is now serialized on the main thread.
-- Fixed pasting on non-QWERTY keyboard layouts (Russian, Dvorak, and others),
-  where the synthesized ⌘V could fail or trigger the wrong action. (#264)
-- Fixed a guaranteed crash when lowering the "Save" preference below "After each
-  clip" while iCloud Clippings Sync was enabled.
-- Fixed the menu search field returning wrong or stale results. (#290)
-- Fixed a crash when enabling iCloud sync in unsigned/local builds that lack
-  iCloud entitlements; sync now degrades gracefully instead. (#321)
-- The project again builds cleanly on current Xcode.
+Initial PastePal release, based on a snapshot of the upstream Flycut `master`
+branch. The application is macOS-only and keeps history entirely on the local
+Mac.
 
-Credits: menu-search fix by @chzhc; several fixes adapted from the
-actively-maintained community fork (haad/Flycut) and from contributor pull
-requests (#314, #322, #323).
+### Added
+
+- Menu-bar clipboard history with the translucent bezel, search, favorites,
+  merge, delete, and clear.
+- Image clipboard history in the same timeline as text, with PNG, TIFF, JPEG,
+  and HEIC capture and pasteboard output.
+- SHA-256 image deduplication: copying an existing image moves it to the top of
+  the history without storing a second copy.
+- Unified `rememberNum` sliding window for text and images, plus a configurable
+  image storage cap (500 MB by default) and a 50 MB per-image limit.
+- Image thumbnails in the menu and a large preview with dimensions, format, and
+  byte size in the bezel.
+- Mark-and-sweep cleanup that removes unreferenced image files after delete,
+  clear, and capacity eviction. Favorites are never removed automatically.
+- Unit tests for clipping equality, image storage, deduplication, eviction,
+  favorites protection, and persistence.
+- GitHub Actions CI and an ad-hoc signed DMG release workflow with SHA-256
+  checksums.
+
+### Changed
+
+- Renamed the application, targets, preferences domain, and bundle identifiers
+  to PastePal.
+- New application icon and monochrome menu-bar template icons.
+- Persistence format extended to version 0.8 to store image metadata; version
+  0.7 text-only data remains readable.
+
+### Removed
+
+- All iOS targets, iOS-only dependencies, and iOS build configuration.
+- iCloud/CloudKit synchronization and related preferences and entitlements.
+- App Store, notarization, and Developer ID release automation.
