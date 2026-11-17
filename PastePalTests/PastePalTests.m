@@ -16,12 +16,13 @@
 
 - (FlycutClipping *)clippingWithContents:(NSString *)contents
 {
-    return [[FlycutClipping alloc] initWithContents:contents
-                                           withType:@"NSStringPboardType"
-                                  withDisplayLength:40
-                               withAppLocalizedName:@"Finder"
-                                   withAppBundleURL:@"/System/Library/CoreServices/Finder.app"
-                                      withTimestamp:0];
+    // 引擎代码使用 MRC，测试 target 同样关闭 ARC，返回前交给自动释放池
+    return [[[FlycutClipping alloc] initWithContents:contents
+                                            withType:@"NSStringPboardType"
+                                   withDisplayLength:40
+                                withAppLocalizedName:@"Finder"
+                                    withAppBundleURL:@"/System/Library/CoreServices/Finder.app"
+                                       withTimestamp:0] autorelease];
 }
 
 - (void)testDisplayStringUsesFirstLine
