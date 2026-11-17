@@ -511,6 +511,8 @@
 		stackPosition = 0;
         [selectorTarget performSelector:clippingAddedSelector];
 		[self actionAfterListModification];
+		// 统一条数窗口可能因插入文本而淘汰图片，这里顺手清扫其文件
+		[self sweepUnreferencedImages];
 
 		return success;
     }

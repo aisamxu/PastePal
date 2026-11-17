@@ -58,6 +58,9 @@
 		77A4F3B4139BD72300F39666 /* SGKeyCombo.m in Sources */ = {isa = PBXBuildFile; fileRef = 77A4F3AC139BD72300F39666 /* SGKeyCombo.m */; };
 		77AE72BD23CAE81A00F6A44B /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77AE72BC23CAE81A00F6A44B /* ApplicationServices.framework */; };
 		77C3C1B5D202B61B12B6D134 /* PastePalTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 923417A60EE78AC3A02A2C89 /* PastePalTests.m */; };
+		5A1B2C3D4E5F60718293A502 /* PastePalImageStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A1B2C3D4E5F60718293A501 /* PastePalImageStoreTests.m */; };
+		5A1B2C3D4E5F60718293A504 /* PastePalOperatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A1B2C3D4E5F60718293A503 /* PastePalOperatorTests.m */; };
+		5A1B2C3D4E5F60718293A505 /* FlycutOperator.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D0C119E1F147E250046FAA0 /* FlycutOperator.m */; };
 		77DA6B921CB9549B0077917F /* FlycutStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DA6B8E1CB9549B0077917F /* FlycutStore.m */; };
 		77DA6B931CB9549B0077917F /* FlycutStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DA6B8F1CB9549B0077917F /* FlycutStore.h */; };
 		77DA6B941CB9549B0077917F /* FlycutClipping.m in Sources */ = {isa = PBXBuildFile; fileRef = 77DA6B901CB9549B0077917F /* FlycutClipping.m */; };
@@ -188,6 +191,8 @@
 		8D1107320486CEB800E47090 /* PastePal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = PastePal.app; path = PastePal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D151CC11FAC2B38005132F0 /* acknowledgements.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = acknowledgements.txt; sourceTree = "<group>"; };
 		923417A60EE78AC3A02A2C89 /* PastePalTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PastePalTests.m; sourceTree = "<group>"; };
+		5A1B2C3D4E5F60718293A501 /* PastePalImageStoreTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PastePalImageStoreTests.m; sourceTree = "<group>"; };
+		5A1B2C3D4E5F60718293A503 /* PastePalOperatorTests.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = PastePalOperatorTests.m; sourceTree = "<group>"; };
 		AABE497A09FF9CD000A6A239 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		AABE497B09FF9CD000A6A239 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		AAFAC84A0A1BD9DD00DC6025 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -236,6 +241,8 @@
 			isa = PBXGroup;
 			children = (
 				923417A60EE78AC3A02A2C89 /* PastePalTests.m */,
+				5A1B2C3D4E5F60718293A501 /* PastePalImageStoreTests.m */,
+				5A1B2C3D4E5F60718293A503 /* PastePalOperatorTests.m */,
 				1241E1D2BD5996716E9F28D0 /* Info.plist */,
 			);
 			name = PastePalTests;
@@ -629,6 +636,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				77C3C1B5D202B61B12B6D134 /* PastePalTests.m in Sources */,
+				5A1B2C3D4E5F60718293A502 /* PastePalImageStoreTests.m in Sources */,
+				5A1B2C3D4E5F60718293A504 /* PastePalOperatorTests.m in Sources */,
+				5A1B2C3D4E5F60718293A505 /* FlycutOperator.m in Sources */,
 				CA876BEFFF3658322C081223 /* FlycutClipping.m in Sources */,
 				1F13F5AD7FC81BE82ED73A79 /* FlycutStore.m in Sources */,
 				5A1B2C3D4E5F60718293A404 /* PastePalImageStore.m in Sources */,
@@ -715,6 +725,8 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PastePal_Prefix.pch;
 				INFOPLIST_FILE = PastePalTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
@@ -964,6 +976,8 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = PastePal_Prefix.pch;
 				INFOPLIST_FILE = PastePalTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;

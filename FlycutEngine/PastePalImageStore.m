@@ -37,7 +37,6 @@ static NSError *PastePalImageStoreError(NSString *message)
         imageCache = [[NSCache alloc] init];
         imageCache.countLimit = 100;
         representationCache = [[NSCache alloc] init];
-        // 只缓存少量最近图片的编码结果，防止大量大图占用内存
         // 只缓存最近一次粘贴的编码结果，避免多张大图同时占用大量内存
         representationCache.countLimit = 1;
         ioQueue = dispatch_queue_create("io.github.aisamxu.PastePal.ImageStore", DISPATCH_QUEUE_SERIAL);
