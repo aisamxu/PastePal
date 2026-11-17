@@ -77,7 +77,8 @@
         @"suppressAccessibilityAlert",
         nil]];
 
-	menuQueue = dispatch_queue_create(@"com.Flycut.menuUpdateQueue", DISPATCH_QUEUE_SERIAL);
+	// 菜单刷新队列使用唯一的 C 字符串标识，避免误用 Objective-C 字面量
+	menuQueue = dispatch_queue_create("io.github.aisamxu.PastePal.menuUpdateQueue", DISPATCH_QUEUE_SERIAL);
 
 	return [super init];
 }
@@ -86,7 +87,7 @@
     BOOL suppressAlert = [[NSUserDefaults standardUserDefaults] boolForKey:@"suppressAccessibilityAlert"];
     NSDictionary* options = @{(id) (kAXTrustedCheckOptionPrompt): @NO};
     if (!suppressAlert && AXIsProcessTrustedWithOptions != NULL && !AXIsProcessTrustedWithOptions((CFDictionaryRef) (options))) {
-        NSAlert *alert = [NSAlert alertWithMessageText:@"Flycut" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"For correct functioning of the app please tick Flycut in Accessibility apps list"];
+        NSAlert *alert = [NSAlert alertWithMessageText:@"PastePal" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"For correct functioning of the app please tick PastePal in Accessibility apps list"];
         alert.showsSuppressionButton = YES;
         [alert runModal];
         if (alert.suppressionButton.state == NSOnState) {
@@ -97,27 +98,6 @@
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:urlString]];
     }
 }
-
-
-- (void)showOldOSXAlert {
-    // FIXME: Should ask Gennadii if the "#ifdef SANDBOXING" should be removed and replaced with "if (![AppController isAppSandboxed]) { return; }"
-#ifdef SANDBOXING
-    NSOperatingSystemVersion ver = [[NSProcessInfo processInfo] operatingSystemVersion];
-    if (ver.majorVersion == 10 && ver.minorVersion <= 13) {
-        BOOL suppressAlert = [[NSUserDefaults standardUserDefaults] boolForKey:@"suppressOldOSXAlert"];
-        if (!suppressAlert) {
-            NSAlert *alert = [NSAlert alertWithMessageText:@"Flycut" defaultButton:@"OK" alternateButton:nil otherButton:nil informativeTextWithFormat:@"Unfortunatly due to some app sandbox security restrictions from Apple Flycut may not correctly function on MacOSX 10.13 or lower. You can download non sandboxed version here: https://github.com/TermiT/Flycut/releases"];
-            alert.showsSuppressionButton = YES;
-            [alert runModal];
-            if (alert.suppressionButton.state == NSOnState) {
-                [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES]
-                                                         forKey:@"suppressOldOSXAlert"];
-            }
-        }
-    }
-#endif
-}
-
 
 
 - (void)awakeFromNib
@@ -193,7 +173,7 @@
     dispatch_async(queue, ^{
         // FIXME: Should ask Gennadii if the "#ifdef SANDBOXING" should be removed and replaced with "if ([AppController isAppSandboxed])"
 #ifdef SANDBOXING
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"bundleIdentifier == %@", kFlycutHelperId];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"bundleIdentifier == %@", kPastePalHelperId];
         NSArray *helperApp = [[[NSWorkspace sharedWorkspace] runningApplications] filteredArrayUsingPredicate:predicate];
         BOOL helperLaunched = ([helperApp count] != 0);
         [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:helperLaunched]
@@ -216,7 +196,6 @@
     
     // Check if the app has Accessibility permission
     [self showAccessibilityAlert];
-    [self showOldOSXAlert];
 }
 
 -(void)savePreferencesOnDict:(NSMutableDictionary *)saveDict
@@ -248,18 +227,18 @@
     else
     {
         // We need to do a little trick to get the search box functional.  Figure out what is currently active.
-        NSString *currRunningApp = @"";
         NSRunningApplication *currApp = nil;
         for (currApp in [[NSWorkspace sharedWorkspace] runningApplications])
             if ([currApp isActive])
             {
-                currRunningApp = [currApp localizedName];
                 break;
             }
 
-        if ( [currRunningApp rangeOfString:@"Flycut"].location == NSNotFound )
+        // 改为比较 bundle id，避免应用改名或本地化后误判当前应用是否为自己
+        BOOL isPastePalActive = [[currApp bundleIdentifier] isEqualToString:[[NSBundle mainBundle] bundleIdentifier]];
+        if ( !isPastePalActive )
         {
-            // We haven't activated Flycut yet.
+            // We haven't activated PastePal yet.
             currentRunningApplication = [currApp retain]; // Remember what app we came from.
             [menu cancelTracking]; // Prevent the menu from displaying, since activateIgnoringOtherApps would close it anyway.
             [NSApp activateIgnoringOtherApps: YES]; // Required to make the search field firstResponder any good.
@@ -267,7 +246,7 @@
         }
         else
         {
-            // Flycut is now active, so set the first responder once the menu opens.
+            // PastePal is now active, so set the first responder once the menu opens.
             [self performSelector:@selector(activateSearchBox) withObject:nil afterDelay:0.2 inModes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
         }
     }
@@ -594,8 +573,8 @@
 
 	row = [self preferencePanelPopUpRowForText:@"Menu item icon"
 										 items:[NSArray arrayWithObjects:
-												@"Flycut icon",
-												@"Black Flycut icon",
+												@"PastePal icon",
+												@"Black PastePal icon",
 												@"White scissors",
 												@"Black scissors",nil]
 									 frameMaxY:nextYMax
@@ -667,14 +646,14 @@
 	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"loadOnStartup"] ) {
         // FIXME: Should ask Gennadii if the "#ifdef SANDBOXING" should be removed and replaced with "if ([AppController isAppSandboxed])"
 #ifdef SANDBOXING
-        SMLoginItemSetEnabled((__bridge CFStringRef)kFlycutHelperId, YES);
+        SMLoginItemSetEnabled((__bridge CFStringRef)kPastePalHelperId, YES);
 #else
     [UKLoginItemRegistry addLoginItemWithPath:[[NSBundle mainBundle] bundlePath] hideIt:NO];
 #endif
 	} else {
         // FIXME: Should ask Gennadii if the "#ifdef SANDBOXING" should be removed and replaced with "if ([AppController isAppSandboxed])"
 #ifdef SANDBOXING
-        SMLoginItemSetEnabled((__bridge CFStringRef)kFlycutHelperId, NO);
+        SMLoginItemSetEnabled((__bridge CFStringRef)kPastePalHelperId, NO);
 #else
 		[UKLoginItemRegistry removeLoginItemWithPath:[[NSBundle mainBundle] bundlePath]];
 #endif
@@ -1068,7 +1047,7 @@
 	mainHotKey = [[SGHotKey alloc] initWithIdentifier:@"mainHotKey"
 											   keyCombo:[SGKeyCombo keyComboWithKeyCode:[mainRecorder keyCombo].code
 																			  modifiers:[mainRecorder cocoaToCarbonFlags: [mainRecorder keyCombo].flags]]];
-	[mainHotKey setName: @"Activate Flycut HotKey"]; //This is typically used by PTKeyComboPanel
+	[mainHotKey setName: @"Activate PastePal HotKey"]; //This is typically used by PTKeyComboPanel
 	[mainHotKey setTarget: self];
 	[mainHotKey setAction: @selector(hitMainHotKey:)];
 	[[SGHotKeyCenter sharedCenter] registerHotKey:mainHotKey];

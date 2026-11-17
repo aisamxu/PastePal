@@ -1,11 +1,12 @@
 //
-// Prefix header for all source files of the 'Flycut' target in the 'Flycut' project
+// Prefix header for all source files of the 'PastePal' target in the 'PastePal' project
 //
 
 #ifdef __OBJC__
 #import <Cocoa/Cocoa.h>
 
-#define kFlycutHelperId @"com.generalarcade.flycuthelper"
+// 登录项 Helper 的 bundle id，必须与 PastePalHelper target 的 PRODUCT_BUNDLE_IDENTIFIER 保持一致
+#define kPastePalHelperId @"io.github.aisamxu.PastePalHelper"
 
 // The SANDBOXING flag isn't tightly coupled with the sandboxing entitlement, so this amounts to more of a code policy flag than a feature availability flag at the moment. [AppController isAppSandboxed] is more effective for feature availability checks.
 //#define SANDBOXING

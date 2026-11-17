@@ -14,6 +14,8 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>${PRODUCT_NAME}</string>
+	<key>CFBundleDisplayName</key>
+	<string>PastePal</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -23,13 +25,13 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.developer-tools</string>
+	<string>public.app-category.productivity</string>
 	<key>LSUIElement</key>
 	<string>1</string>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>Flycut needs this permission to be able to paste text into other applications, and add itself to Login Items to be launched on login.</string>
+	<string>PastePal needs this permission to paste clippings into other applications and to add itself to Login Items.</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>(c) General Arcade, 2011-2020</string>
+	<string>Copyright © 2026 PastePal contributors. Based on Flycut and Jumpcut.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
