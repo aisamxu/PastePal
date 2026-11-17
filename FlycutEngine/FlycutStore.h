@@ -80,6 +80,8 @@
 -(NSArray *) previousContents:(int)howMany;
 -(NSArray *) previousDisplayStrings:(int)howMany;
 -(NSArray *) previousDisplayStrings:(int)howMany containing:(NSString*)search;
+// 与 previousDisplayStrings 顺序一致，返回 FlycutClipping 以便菜单设置缩略图
+-(NSArray *) previousClippings:(int)howMany containing:(NSString*)search;
 -(NSArray *) previousIndexes:(int)howMany containing:(NSString*)search; // This method is in newest-first order.
 -(int) indexOfClipping:(FlycutClipping*) clipping;
 -(int) indexOfClipping:(NSString *)clipping ofType:(NSString *)type fromAppLocalizedName:(NSString *)appLocalizedName fromAppBundleURL:(NSString *)bundleURL atTimestamp:(int) timestamp;

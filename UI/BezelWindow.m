@@ -96,6 +96,14 @@ static const float lineHeight = 16;
 		[textField.textField setBordered:NO];
 		[textField.textField setAlignment:NSLeftTextAlignment];
 
+		// 图片预览层位于文本层之上、字符计数层之下
+		previewImageView = [[NSImageView alloc] initWithFrame:[self previewFrame]];
+		[[self contentView] addSubview:previewImageView];
+		[previewImageView setImageScaling:NSImageScaleProportionallyUpOrDown];
+		[previewImageView setImageAlignment:NSImageAlignCenter];
+		[previewImageView setEditable:NO];
+		[previewImageView setHidden:YES];
+
 		NSRect charFrame = [self charFrame];
 		charField = [[RoundRecTextField alloc] initWithFrame:charFrame];
 		[[self contentView] addSubview:charField];
@@ -128,8 +136,14 @@ static const float lineHeight = 16;
     if (nil == sourceText || 0 == sourceText.length)
         showSourceField = false;
 
-    NSRect textFrame = [self textFrame];
-    [textField setFrame:textFrame];
+    if (imageMode) {
+        // 图片模式：文字框缩成底部一行说明，预览图占满其余空间
+        [textField setFrame:[self imageCaptionFrame]];
+        [previewImageView setFrame:[self previewFrame]];
+    } else {
+        NSRect textFrame = [self textFrame];
+        [textField setFrame:textFrame];
+    }
     NSRect charFrame = [self charFrame];
     [charField setFrame:charFrame];
     if (showSourceField)
@@ -188,6 +202,22 @@ static const float lineHeight = 16;
     return NSMakeRect(([self frame].size.width - (3 * lineHeight)) / 2, 7, 4 * lineHeight, 1.2 * lineHeight);
 }
 
+-(NSRect) imageCaptionFrame
+{
+    // 图片模式下只保留一行说明文字，位于字符计数上方
+    return NSMakeRect(12, 36, self.frame.size.width - 24, 24);
+}
+
+-(NSRect) previewFrame
+{
+    NSRect textArea = [self textFrame];
+    CGFloat captionHeight = 24.0;
+    CGFloat available = textArea.size.height - captionHeight - 6;
+    // 预览最大高度 180pt，避免大图把 Bezel 撑得过高
+    CGFloat previewHeight = MIN(180.0, MAX(40.0, available));
+    return NSMakeRect(12, textArea.origin.y + captionHeight + 6, textArea.size.width, previewHeight);
+}
+
 -(NSColor*) backgroundColor
 {
     return [self sizedBezelBackgroundWithRadius:25.0 withAlpha:[[NSUserDefaults standardUserDefaults] floatForKey:@"bezelAlpha"]];
@@ -226,6 +256,12 @@ static const float lineHeight = 16;
 
 - (void)setText:(NSString *)newText
 {
+    // 从图片切回文本时清理预览层
+    if (imageMode) {
+        imageMode = NO;
+        [previewImageView setImage:nil];
+        [previewImageView setHidden:YES];
+    }
     // The Bezel gets slow when newText is huge.  Probably the retain.
     // Since we can't see that much of it anyway, trim to 2000 characters.
     if ([newText length] > 2000)
@@ -234,6 +270,23 @@ static const float lineHeight = 16;
 	[bezelText release];
 	bezelText = newText;
 	[textField.textField setStringValue:bezelText];
+	[self update];
+}
+
+- (void)setImage:(NSImage *)image displayText:(NSString *)newText
+{
+    if (nil == image) {
+        [self setText:newText];
+        return;
+    }
+    imageMode = YES;
+    [newText retain];
+    [bezelText release];
+    bezelText = newText;
+    [textField.textField setStringValue:bezelText ? bezelText : @""];
+    [previewImageView setImage:image];
+    [previewImageView setHidden:NO];
+    [self update];
 }
 
 - (void)setSourceIcon:(NSImage *)newSourceIcon
@@ -317,6 +370,7 @@ static const float lineHeight = 16;
 	[textField release];
 	[charField release];
 	[iconView release];
+	[previewImageView release];
 	[super dealloc];
 }
 
