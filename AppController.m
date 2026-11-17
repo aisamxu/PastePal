@@ -19,7 +19,6 @@
 #import "UKLoginItemRegistry.h"
 #import "NSWindow+TrueCenter.h"
 #import "NSWindow+ULIZoomEffect.h"
-#import "MJCloudKitUserDefaultsSync/MJCloudKitUserDefaultsSync.h"
 #import <ApplicationServices/ApplicationServices.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <ServiceManagement/ServiceManagement.h>
@@ -78,52 +77,9 @@
         @"suppressAccessibilityAlert",
         nil]];
 
-	/* For testing, the ability to force initial values of the sync settings:
-	[[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:NO]
-											 forKey:@"syncSettingsViaICloud"];
-	[[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:NO]
-											 forKey:@"syncClippingsViaICloud"];*/
-
-	settingsSyncList = @[@"displayNum",
-						 @"displayLen",
-						 @"menuIcon",
-						 @"bezelAlpha",
-						 @"stickyBezel",
-						 @"wraparoundBezel",
-						 @"loadOnStartup",
-						 @"menuSelectionPastes",
-						 @"bezelWidth",
-						 @"bezelHeight",
-						 @"popUpAnimation",
-						 @"displayClippingSource",
-						 @"saveForgottenClippings",
-						 @"saveForgottenFavorites",
-                         @"suppressAccessibilityAlert",
-                        ];
-	[settingsSyncList retain];
-
 	menuQueue = dispatch_queue_create(@"com.Flycut.menuUpdateQueue", DISPATCH_QUEUE_SERIAL);
 
 	return [super init];
-}
-
-- (void)registerOrDeregisterICloudSync
-{
-	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncSettingsViaICloud"] ) {
-		[[MJCloudKitUserDefaultsSync sharedSync] removeNotificationsFor:MJSyncNotificationChanges forTarget:self];
-		[[MJCloudKitUserDefaultsSync sharedSync] addNotificationFor:MJSyncNotificationChanges withSelector:@selector(checkPreferencesChanges:) withTarget: self];
-		// Not registering for conflict notifications, since we just sync settings, and if the settings are conflictingly adjusted simultaneously on two systems there is nothing to say which setting is better.
-
-		[[MJCloudKitUserDefaultsSync sharedSync] startWithKeyMatchList:settingsSyncList
-					withContainerIdentifier:kiCloudId];
-	}
-	else {
-		[[MJCloudKitUserDefaultsSync sharedSync] stopForKeyMatchList:settingsSyncList];
-
-		[[MJCloudKitUserDefaultsSync sharedSync] removeNotificationsFor:MJSyncNotificationChanges forTarget:self];
-	}
-
-	[flycutOperator registerOrDeregisterICloudSync];
 }
 
 - (void)showAccessibilityAlert {
@@ -255,7 +211,6 @@
         }
 #endif
     });
-    [self registerOrDeregisterICloudSync];
 
     [NSApp activateIgnoringOtherApps: YES];
     
@@ -438,16 +393,6 @@
         [statusItem setTitle:@""];
         [statusItem setImage:[NSImage imageNamed:@"com.generalarcade.flycut.16.png"]];
     }
-}
-
--(NSDictionary*) checkPreferencesChanges:(NSDictionary*)changes
-{
-	if ( [changes valueForKey:@"rememberNum"] )
-		[self checkRememberNumPref:[[NSUserDefaults standardUserDefaults] integerForKey:@"rememberNum"]
-				   forPrimaryStore:YES];
-	if ( [changes valueForKey:@"favoritesRememberNum"] )
-		[self checkFavoritesRememberNumPref:[[NSUserDefaults standardUserDefaults] integerForKey:@"favoritesRememberNum"]];
-	return nil;
 }
 
 -(IBAction) setRememberNumPref:(id)sender
@@ -1039,31 +984,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification
 {
-	// Enable notification from CloudKit
-	[NSApp registerForRemoteNotificationTypes:NSRemoteNotificationTypeNone];// silent push notification!
-
 	//Create our hot key
 	[self toggleMainHotKey:[NSNull null]];
-}
-
-// Remote Notifications (APN, aka Push Notifications) are only available on apps distributed via the App Store.
-// To support building for both distribution channels, include the following two methods to detect if Remote Notifications are available and inform MJCloudKitUserDefaultsSync.
-- (void)application:(NSApplication *)application
-didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-	// Forward the token to your provider, using a custom method.
-	NSLog(@"Registered for remote notifications.");
-	[[MJCloudKitUserDefaultsSync sharedSync] setRemoteNotificationsEnabled:YES];
-}
-
-- (void)application:(NSApplication *)application
-didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
-	NSLog(@"Remote notification support is unavailable due to error: %@", error);
-	[[MJCloudKitUserDefaultsSync sharedSync] setRemoteNotificationsEnabled:NO];
-}
-
-- (void)application:(NSApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
-{
-	[flycutOperator checkCloudKitUpdates];
 }
 
 - (void) updateBezel
@@ -1152,75 +1074,9 @@ didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
 	[[SGHotKeyCenter sharedCenter] registerHotKey:mainHotKey];
 }
 
-- (IBAction)toggleICloudSyncSettings:(id)sender
-{
-	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncSettingsViaICloud"] ) {
-		NSAlert *alert = [[NSAlert alloc] init];
-		[alert setMessageText:@"Warning"];
-		[alert addButtonWithTitle:@"Ok"];
-		[alert addButtonWithTitle:@"Cancel"];
-		[alert setInformativeText:@"Enabling iCloud Settings Sync will overwrite local settings if your iCloud account already has Flycut settings.  If you have never enabled this in Flycut on any computer, your current settings will be retained and loaded into iCloud."];
-		if ( [alert runModal] != NSAlertFirstButtonReturn )
-		{
-			[[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:NO]
-													 forKey:@"syncSettingsViaICloud"];
-		}
-		[alert release];
-		// Add option to overwrite iCloud.
-	}
-
-	[self registerOrDeregisterICloudSync];
-}
-
-- (IBAction)toggleICloudSyncClippings:(id)sender
-{
-	if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncClippingsViaICloud"] ) {
-		if ( [[NSUserDefaults standardUserDefaults] integerForKey:@"savePreference"] < 2 ) {
-			// Must set syncClippingsViaICloud = 2
-			NSAlert *alert = [[NSAlert alloc] init];
-			[alert setMessageText:@"Settings Change"];
-			[alert addButtonWithTitle:@"Ok"];
-			[alert addButtonWithTitle:@"Cancel"];
-			[alert setInformativeText:@"iCloud Clippings Sync will set 'Save: After each clip'."];
-			if ( [alert runModal] == NSAlertFirstButtonReturn )
-			{
-				[[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithInt:2]
-														 forKey:@"savePreference"];
-			} else {
-				[[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:NO]
-														 forKey:@"syncClippingsViaICloud"];
-			}
-			[alert release];
-		}
-	}
-
-	[self registerOrDeregisterICloudSync];
-}
-
 - (IBAction)setSavePreference:(id)sender
 {
-	if ( [[NSUserDefaults standardUserDefaults] integerForKey:@"savePreference"] < 2 ) {
-		if ( [[NSUserDefaults standardUserDefaults] boolForKey:@"syncClippingsViaICloud"] ) {
-			// Must disable syncClippingsViaICloud
-			NSAlert *alert = [[NSAlert alloc] init];
-			[alert setMessageText:@"Settings Change"];
-			[alert addButtonWithTitle:@"Ok"];
-			[alert addButtonWithTitle:@"Cancel"];
-			[alert setInformativeText:@"Disabling 'Save: After each clip' will disable iCloud Clippings Sync."];
-
-			if ( [alert runModal] == NSAlertFirstButtonReturn )
-			{
-				[[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:NO]
-														 forKey:@"syncClippingsViaICloud"];
-			}
-			else
-			{
-				[[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithInt:2]
-														 forKey:@"savePreference"];
-			}
-			[alert release];
-		}
-	}
+	// 保存策略仅影响本地自动保存，云同步移除后无需额外处理。
 }
 
 - (IBAction)selectSaveLocation:(id)sender {
