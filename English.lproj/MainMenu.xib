@@ -653,7 +653,7 @@
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="Acknowledgements" identifier="com.generalarcade.flycut.32.png" id="352">
+                            <tabViewItem label="Acknowledgements" identifier="net.sf.jumpcut.preferences.acknowledgements.tiff" id="352">
                                 <view key="view" id="353">
                                     <rect key="frame" x="0.0" y="0.0" width="507" height="471"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
