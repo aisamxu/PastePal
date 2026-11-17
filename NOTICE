@@ -1,0 +1,16 @@
+PastePal is derived from Flycut, an open-source clipboard manager originally
+developed by General Arcade, and from Jumpcut, the project Flycut was forked
+from.
+
+Upstream projects:
+- Flycut: https://github.com/TermiT/Flycut
+- Jumpcut: http://jumpcut.sourceforge.net
+
+Flycut copyright (C) 2011 General Arcade, Gennadiy Potapov.
+Jumpcut copyright (C) 2002-2008 Steve Cook.
+
+Both upstream projects are distributed under the MIT License. The original
+Flycut copyright and permission notice is preserved in the LICENSE file.
+
+PastePal's macOS-only migration, image clipboard support, branding, and
+release automation are maintained independently in this repository.
