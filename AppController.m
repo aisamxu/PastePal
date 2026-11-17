@@ -280,7 +280,10 @@
         statusItemText = [statusItem title];
         statusItemImage = [statusItem image];
         [statusItem setTitle: @""];
-        [statusItem setImage: [NSImage imageNamed:@"com.generalarcade.flycut.xout.16.png"]];
+        // 置灰态同样使用单色模板，避免出现彩色像素
+        NSImage *disabledIcon = [NSImage imageNamed:@"PastePalMenuDisabledTemplate.png"];
+        [disabledIcon setTemplate:YES];
+        [statusItem setImage: disabledIcon];
         return true;
     }
     else
@@ -360,17 +363,15 @@
 -(void) switchMenuIconTo:(int)number
 {
     if (number == 1 ) {
-        [statusItem setTitle:@""];
-        [statusItem setImage:[NSImage imageNamed:@"com.generalarcade.flycut.black.16.png"]];
-    } else if (number == 2 ) {
-        [statusItem setImage:nil];
-        [statusItem setTitle:[NSString stringWithFormat:@"%C",0x2704]];
-    } else if ( number == 3 ) {
+        // 剪刀选项使用系统字符，作为标题文本由菜单栏自动着色
         [statusItem setImage:nil];
         [statusItem setTitle:[NSString stringWithFormat:@"%C",0x2702]];
     } else {
+        // 默认使用纯单色 P 模板；isTemplate 让系统按菜单栏深浅色自动反色
         [statusItem setTitle:@""];
-        [statusItem setImage:[NSImage imageNamed:@"com.generalarcade.flycut.16.png"]];
+        NSImage *icon = [NSImage imageNamed:@"PastePalMenuTemplate.png"];
+        [icon setTemplate:YES];
+        [statusItem setImage:icon];
     }
 }
 
@@ -571,12 +572,10 @@
 	[appearancePanel addSubview:row];
 	nextYMax = row.frame.origin.y;
 
-	row = [self preferencePanelPopUpRowForText:@"Menu item icon"
+	row = [self preferencePanelPopUpRowForText:@"Menu bar icon"
 										 items:[NSArray arrayWithObjects:
-												@"PastePal icon",
-												@"Black PastePal icon",
-												@"White scissors",
-												@"Black scissors",nil]
+												@"PastePal",
+												@"Scissors",nil]
 									 frameMaxY:nextYMax
 									   binding:@"menuIcon"
 										action:@selector(switchMenuIcon:)];
